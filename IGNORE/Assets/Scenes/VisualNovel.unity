@@ -309,6 +309,7 @@ GameObject:
   - component: {fileID: 400754418}
   - component: {fileID: 400754417}
   - component: {fileID: 400754419}
+  - component: {fileID: 400754420}
   m_Layer: 5
   m_Name: BottomBar
   m_TagString: Untagged
@@ -350,7 +351,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.80784315}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.88235295}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -390,6 +391,28 @@ MonoBehaviour:
   barText: {fileID: 1157274855}
   personNameText: {fileID: 2032168488}
   currentScene: {fileID: 11400000, guid: cd5f7b16a433b5344a3f70f01901df1c, type: 2}
+--- !u!95 &400754420
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 400754415}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 46afdd0c5de480243b052e76660cca00, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &476829048
 GameObject:
   m_ObjectHideFlags: 0
@@ -738,7 +761,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 569aee05e93347943894843bbbf6aacb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManagerVisualNovel
-  currentScene: {fileID: 11400000, guid: 20f976577e46ed041a60c15f2938e95c, type: 2}
+  currentScene: {fileID: 11400000, guid: cd5f7b16a433b5344a3f70f01901df1c, type: 2}
   bottomBarController: {fileID: 400754419}
   backgroundController: {fileID: 1355817843}
 --- !u!4 &942542377

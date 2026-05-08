@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem; 
 
@@ -6,6 +7,12 @@ public class GameManagerVisualNovel : MonoBehaviour
     public StoryScene currentScene; 
     public BottomBarController bottomBarController; 
     public BackgroundController backgroundController;
+    private State state = State.IDLE; 
+
+    private enum State
+    {
+        IDLE, ANIMATE
+    }
     void Start()
     {
         bottomBarController.PlayScene(currentScene); 
@@ -17,13 +24,11 @@ public class GameManagerVisualNovel : MonoBehaviour
     {
         if (Keyboard.current.spaceKey.wasPressedThisFrame || Mouse.current.leftButton.wasPressedThisFrame)
         {
-            if (bottomBarController.IsCompleted())
+            if (state == State.IDLE && bottomBarController.IsCompleted())
             {
                 if (bottomBarController.IsLastSentence())
                 {
-                    currentScene = currentScene.nextScene; 
-                    bottomBarController.PlayScene(currentScene);
-                    backgroundController.SwitchImage(currentScene.background); 
+                    PlayScene(currentScene.nextScene); 
                 }
                 else
                 {
@@ -32,5 +37,25 @@ public class GameManagerVisualNovel : MonoBehaviour
                 
             }
         }
+    }
+
+    private void PlayScene(StoryScene scene)
+    {
+        StartCoroutine(SwitchScene(scene)); 
+    }
+
+    private IEnumerator SwitchScene(StoryScene scene)
+    {
+        state = State.ANIMATE; 
+        currentScene = scene; 
+        bottomBarController.Hide();
+        yield return new WaitForSeconds(1f);
+        backgroundController.SwitchImage(scene.background); 
+        yield return new WaitForSeconds(1f); 
+        bottomBarController.ClearText();
+        bottomBarController.Show(); 
+        yield return new WaitForSeconds(1f);  
+        bottomBarController.PlayScene(scene); 
+        state = State.IDLE; 
     }
 }

@@ -9,11 +9,45 @@ public class BottomBarController : MonoBehaviour
     private int sentenceIndex = -1;
     public StoryScene currentScene; 
     private State state = State.COMPLETED; 
-
+    private Animator animator; //Va permettre de faire disparaitre en fade la boite pendant transition scène
+    private bool isHidden = false; //Pour savoir si on cache ou pas le bottom
+    
     private enum State //machine à état 
     {
         COMPLETED, PLAYING 
     }
+
+    private void Start()
+    {
+        animator = GetComponent<Animator>();
+    }
+
+    public void Hide() //Cache la barre avec tout le texte
+    {
+        if (!isHidden)
+        {
+            animator.SetTrigger("Hide"); 
+            isHidden = true; 
+        }
+   
+    }
+
+    public void Show() 
+    {
+        if (isHidden)
+        {
+            animator.SetTrigger("Show"); 
+            isHidden = false; 
+        }
+
+    }
+
+    public void ClearText()
+    {
+        barText.text = "";
+        personNameText.text = ""; 
+    }
+
 
     public void PlayScene(StoryScene scene)
     {
