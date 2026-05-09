@@ -14,8 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StoryScene
   sentences:
   - text: "J'ai fait deux ann\xE9es d'\xE9tude \xE0 Montpellier"
-    speaker: {fileID: 11400000, guid: 09755ce2d4251dc41a44db821174246b, type: 2}
-  - text: De ?
     speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
+    actions:
+    - speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
+      spriteIndex: 0
+      actionType: 1
+      coords: {x: 0, y: 0}
+      moveSpeed: 0
+  - text: Et c'est pas rien
+    speaker: {fileID: 11400000, guid: 09755ce2d4251dc41a44db821174246b, type: 2}
+    actions:
+    - speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
+      spriteIndex: 0
+      actionType: 3
+      coords: {x: 0, y: 0}
+      moveSpeed: 0
   background: {fileID: 21300000, guid: 9e25a45c0ad94f348b28f8af5f817c1b, type: 3}
   nextScene: {fileID: 11400000, guid: 20f976577e46ed041a60c15f2938e95c, type: 2}

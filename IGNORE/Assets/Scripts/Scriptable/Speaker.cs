@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 //Créer dans Unity Assets > Create > Data > New Speaker pour nouveau speaker avec par défaut nom = NewSpeakeret chemin affiché dans menu Create = "Data/New Speaker" 
@@ -36,6 +37,8 @@ public class Speaker : ScriptableObject
 {
     [SerializeField] private string speakerName; 
     [SerializeField] private Color textColor; 
+    public List<Sprite> sprites; 
+    public SpriteController prefab; 
 
     public string SpeakerName => speakerName; // Les getters récupèrent les valeurs données pour pouvoir les afficher autre part
     public Color TextColor => textColor;
