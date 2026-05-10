@@ -25,7 +25,7 @@ MonoBehaviour:
       moveSpeed: 0
   - text: Et c'est pas rien
     speaker: {fileID: 11400000, guid: 09755ce2d4251dc41a44db821174246b, type: 2}
-    music: {fileID: 0}
+    music: {fileID: 8300000, guid: a3f039ead8e91fc4399c8078e09a615d, type: 3}
     sound: {fileID: 0}
     actions:
     - speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}

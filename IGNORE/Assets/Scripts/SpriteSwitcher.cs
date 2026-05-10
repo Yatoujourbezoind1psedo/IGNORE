@@ -39,6 +39,18 @@ public class SpriteSwitcher : MonoBehaviour
         }
     }
 
+    public void SyncImages() //pour éviter des problèmes sur Hide de spriteCOntroller (4.43 de vidéo 5)
+    {
+        if (!isSwitched)
+        {
+            image2.sprite = image1.sprite;
+        }
+        else
+        {
+            image1.sprite = image2.sprite; 
+        }
+    }
+
     public Sprite GetImage()
     {
         if (!isSwitched)

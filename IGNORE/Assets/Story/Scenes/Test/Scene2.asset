@@ -25,7 +25,7 @@ MonoBehaviour:
     actions: []
   - text: Ouais salut c'est le pompierrrrrr
     speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
-    music: {fileID: 0}
+    music: {fileID: 8300000, guid: 2accc1e8f348f8d4791f7c4981271187, type: 3}
     sound: {fileID: 0}
     actions: []
   background: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}

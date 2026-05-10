@@ -15,10 +15,14 @@ public class BottomBarController : MonoBehaviour
 
     public Dictionary<Speaker, SpriteController> sprites; //pour éviter de créer constamment de nouveaux objets
     public GameObject spritesPrefab; 
+
+    //pour accélérer le texte 
+    public Coroutine typingCoroutine; 
+    private float speedFactor = 1f; 
     
     private enum State //machine à état 
     {
-        COMPLETED, PLAYING 
+        COMPLETED, SPEEDED_UP, PLAYING 
     }
 
     private void Start()
@@ -44,7 +48,7 @@ public class BottomBarController : MonoBehaviour
 
     public void Show() 
     {
-        if (isHidden)
+        if (isHidden) //pt à retirer 
         {
             animator.SetTrigger("Show"); 
             isHidden = false; 
@@ -59,30 +63,71 @@ public class BottomBarController : MonoBehaviour
     }
 
 
-    public void PlayScene(StoryScene scene) //Se joue quand la scène est finie et passe à la prochaine
+    public void PlayScene(StoryScene scene, int sentenceIndex = -1, bool isAnimated = true) //Se joue quand la scène est finie et passe à la prochaine
     {
         currentScene = scene; 
-        sentenceIndex = -1; 
-        PlayNextSentence(); 
+        this.sentenceIndex =sentenceIndex; 
+        PlayNextSentence(isAnimated); 
     }
     
-    public void PlayNextSentence() //Dans une scene joue la sentence puis fait leurs actions
+    public void PlayNextSentence(bool isAnimated = true) //Dans une scene joue la sentence puis fait leurs actions
     {
-        StartCoroutine(TypeText(currentScene.sentences[++sentenceIndex].text)); //récupère le texte de la première phrase de la scène
+        sentenceIndex ++; 
+        PlaySentence(isAnimated); 
+
+    }
+
+    public void GoBack()
+    {
+        sentenceIndex--; 
+        StopTyping(); 
+        HideSprites(); 
+        PlaySentence(false); 
+    }
+
+    private void PlaySentence(bool isAnimated = true)
+    {
+        speedFactor = 1f;
+        typingCoroutine = StartCoroutine(TypeText(currentScene.sentences[sentenceIndex].text)); //récupère le texte de la première phrase de la scène
         personNameText.text = currentScene.sentences[sentenceIndex].speaker.SpeakerName; 
         personNameText.color = currentScene.sentences[sentenceIndex].speaker.TextColor; 
-        ActSpeakers(); 
-
+        ActSpeakers(isAnimated); 
     }
 
     public bool IsCompleted() //Pour savoir si le typewriting est fini
     {
-        return state == State.COMPLETED; 
+        return state == State.COMPLETED || state == State.SPEEDED_UP; 
     }
 
     public bool IsLastSentence() //Permet de changer si la dernière sentence de la scène
     {
         return sentenceIndex + 1 == currentScene.sentences.Count;
+    }
+
+    public bool IsFirstSentence()
+    {
+        return sentenceIndex == 0; 
+    }
+
+    public void SpeedUp()
+    {
+        state = State.SPEEDED_UP;
+        speedFactor = 0.25f; //Donc quatre fois plus rapide 
+    }
+
+    public void StopTyping()
+    {
+        state = State.COMPLETED; 
+        StopCoroutine(typingCoroutine); 
+    }
+
+    public void HideSprites()
+    {
+        while(spritesPrefab.transform.childCount > 0)
+        {
+            DestroyImmediate(spritesPrefab.transform.GetChild(0).gameObject); 
+        }
+        sprites.Clear(); 
     }
 
     private IEnumerator TypeText(string text) //Tape le texte en effet machien à écrire
@@ -94,7 +139,7 @@ public class BottomBarController : MonoBehaviour
         while (state != State.COMPLETED)
         {
             barText.text = text.Substring(0,caraIndex + 1); //affiche caractère par caractère (passe par substring pour que ce soit moins couteux)
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(speedFactor * 0.05f);
 
             if (++caraIndex == text.Length) //Incrémente puis vérifie 
             {
@@ -105,61 +150,44 @@ public class BottomBarController : MonoBehaviour
         }
     }
 
-    private void ActSpeakers() //Joue toutes les actions d'une sentence 
+    private void ActSpeakers(bool isAnimated = true) //Joue toutes les actions d'une sentence 
     {
         List<StoryScene.Sentence.Action> actions = currentScene.sentences[sentenceIndex].actions; 
         for(int i = 0; i < actions.Count; i++)
         {
-            ActSpeaker(actions[i]); 
+            ActSpeaker(actions[i], isAnimated); 
         }
     }
 
-    private void ActSpeaker(StoryScene.Sentence.Action action)
+    private void ActSpeaker(StoryScene.Sentence.Action action, bool isAnimated = true)
     {
-        SpriteController controller = null;
+        SpriteController controller;
+        if (!sprites.ContainsKey(action.speaker)) //si le perso existe pas encore créé sprite + ajoute au dictionnaire 
+        {
+            controller = Instantiate(action.speaker.prefab.gameObject, spritesPrefab.transform).GetComponent<SpriteController>();
+            sprites.Add(action.speaker, controller); 
+        }
+        else
+        {
+            controller = sprites[action.speaker]; 
+        }
+
         switch (action.actionType)
         {
             case StoryScene.Sentence.Action.Type.APPEAR: //doit forcément appear en début de scène 
-                if (!sprites.ContainsKey(action.speaker)) //si le perso existe pas encore créé sprite + ajoute au dictionnaire 
-                {
-                    controller = Instantiate(action.speaker.prefab.gameObject, spritesPrefab.transform).GetComponent<SpriteController>();
-                    sprites.Add(action.speaker, controller); 
-                }
-                else
-                {
-                    controller = sprites[action.speaker]; 
-                }
                 controller.Setup(action.speaker.sprites[action.spriteIndex]); //configure l'image en la faisant apparaitre brusquement
-                controller.Show(action.coords); //Affiche à une position 
+                controller.Show(action.coords, isAnimated); //Affiche à une position 
                 return; 
 
             case StoryScene.Sentence.Action.Type.MOVE:
-                if (sprites.ContainsKey(action.speaker))
-                {
-                    controller = sprites[action.speaker]; 
-                    controller.Move(action.coords, action.moveSpeed); 
-                }
+                controller.Move(action.coords, action.moveSpeed, isAnimated);
                 break;
 
             case StoryScene.Sentence.Action.Type.DISAPPEAR:
-                if (sprites.ContainsKey(action.speaker))
-                {
-                    controller = sprites[action.speaker]; 
-                    controller.Hide(); 
-                }
-                break;
-
-            case StoryScene.Sentence.Action.Type.NONE: //jsute pour changer le sprite 
-                if (sprites.ContainsKey(action.speaker))
-                {
-                    controller = sprites[action.speaker]; 
-                }
+                controller.Hide(isAnimated); 
                 break;
         }
 
-        if(controller != null)
-        {
-            controller.SwitchSprite(action.speaker.sprites[action.spriteIndex]); 
-        }
+        controller.SwitchSprite(action.speaker.sprites[action.spriteIndex], isAnimated);
     }
 }

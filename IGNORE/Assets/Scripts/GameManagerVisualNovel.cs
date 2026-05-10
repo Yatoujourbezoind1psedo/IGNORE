@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem; 
 
@@ -6,11 +7,13 @@ public class GameManagerVisualNovel : MonoBehaviour
 {
     public GameScene currentScene; 
     public BottomBarController bottomBarController; 
-    public BackgroundController backgroundController;
+    public SpriteSwitcher backgroundController; //ICI 
 
     public AudioController audioController;
 
     private State state = State.IDLE; 
+
+    private List<StoryScene> history = new List<StoryScene>(); //permet de stock les scènes déjà vues pour les rewind 
 
     private enum State
     {
@@ -21,6 +24,7 @@ public class GameManagerVisualNovel : MonoBehaviour
         if(currentScene is StoryScene)
         {
             StoryScene storyScene = currentScene as StoryScene; 
+            history.Add(storyScene);
             bottomBarController.PlayScene(storyScene); 
             backgroundController.SetImage(storyScene.background); 
             PlayAudio(storyScene.sentences[0]); 
@@ -31,49 +35,91 @@ public class GameManagerVisualNovel : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Keyboard.current.spaceKey.wasPressedThisFrame || Mouse.current.leftButton.wasPressedThisFrame)
+        if(state == State.IDLE)
         {
-            if (state == State.IDLE && bottomBarController.IsCompleted())
+            if (Keyboard.current.spaceKey.wasPressedThisFrame || Mouse.current.leftButton.wasPressedThisFrame)
             {
-                if (bottomBarController.IsLastSentence())
+                if (bottomBarController.IsCompleted())
                 {
-                    PlayScene((currentScene as StoryScene).nextScene); 
+                    bottomBarController.StopTyping(); //Si le texte a fini de taper on stop la coroutine et permet de spam pour skip
+                    if (bottomBarController.IsLastSentence())
+                    {
+                        PlayScene((currentScene as StoryScene).nextScene); 
+                    }
+                    else
+                    {
+                        bottomBarController.PlayNextSentence(); 
+                        PlayAudio((currentScene as StoryScene).sentences[bottomBarController.GetSentenceIndex()]); 
+                    }
+                    
                 }
                 else
                 {
-                    bottomBarController.PlayNextSentence(); 
-                    PlayAudio((currentScene as StoryScene).sentences[bottomBarController.GetSentenceIndex()]); 
+                    bottomBarController.SpeedUp(); //Permet d'accéléréer si c'est pas fini
                 }
-                
+            }
+            if (Mouse.current.rightButton.wasPressedThisFrame)
+            {
+                if (bottomBarController.IsFirstSentence())//Si c'est la première phrase de la scène
+                {
+                    if(history.Count > 1)// Et si on est pas à la première scène 
+                    {
+                        bottomBarController.StopTyping(); 
+                        bottomBarController.HideSprites(); 
+                        history.RemoveAt(history.Count - 1); //on enlève la scène sur laquelle on est
+                        StoryScene scene = history[history.Count - 1]; //On revien à la scène précédente
+                        history.RemoveAt(history.Count - 1); 
+                        PlayScene(scene, scene.sentences.Count - 2, false); 
+                    }
+                }
+                else
+                {
+                    bottomBarController.GoBack(); 
+                }
             }
         }
+        
     }
 
-    private void PlayScene(GameScene scene)
+    private void PlayScene(GameScene scene, int sentenceIndex = -1, bool isAnimated = true)
     {
-        StartCoroutine(SwitchScene(scene)); 
+        StartCoroutine(SwitchScene(scene, sentenceIndex, isAnimated)); 
     }
 
-    //SOUCI ICI AVEC GAMESCENE avec CHOOSESCENE Script 
-    private IEnumerator SwitchScene(GameScene scene)
+    
+    private IEnumerator SwitchScene(GameScene scene, int sentenceIndex, bool isAnimated = true)
     {
         state = State.ANIMATE; 
-        currentScene = scene; 
-        bottomBarController.Hide();
-        yield return new WaitForSeconds(1f);
+        currentScene = scene;
+
+        if (isAnimated)//Donc grosso modo si on revient en arrière 
+        {
+            bottomBarController.Hide();
+            yield return new WaitForSeconds(1f);
+        }
+
 
         if(scene is StoryScene)
         {
             StoryScene storyScene = scene as StoryScene;
-            backgroundController.SwitchImage(storyScene.background); 
+            history.Add(storyScene); //ajout pour le rewind
+            PlayAudio(storyScene.sentences[sentenceIndex + 1]); //Va jouer juste l'audio présent sur la première sentence de la scène
 
-            PlayAudio(storyScene.sentences[0]); //Va jouer juste l'audio présent sur la première sentence de la scène
-    
-            yield return new WaitForSeconds(1f); 
-            bottomBarController.ClearText();
-            bottomBarController.Show(); 
-            yield return new WaitForSeconds(1f);  
-            bottomBarController.PlayScene(storyScene); 
+            if (isAnimated)
+            {
+                backgroundController.SwitchImage(storyScene.background); 
+                yield return new WaitForSeconds(1f); 
+                bottomBarController.ClearText();
+                bottomBarController.Show(); 
+                yield return new WaitForSeconds(1f);
+            }
+            else
+            {
+                backgroundController.SetImage(storyScene.background);
+                bottomBarController.ClearText(); 
+            }
+            
+            bottomBarController.PlayScene(storyScene, sentenceIndex, isAnimated); 
             state = State.IDLE; 
         }
         /*

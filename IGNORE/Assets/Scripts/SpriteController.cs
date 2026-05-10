@@ -6,12 +6,14 @@ public class SpriteController : MonoBehaviour
     private SpriteSwitcher switcher; 
     private Animator animator; 
     private RectTransform rect;
+    private CanvasGroup canvasGroup; // quand animation skip change opacité du canvas group 
 
     private void Awake()
     {
         switcher = GetComponent<SpriteSwitcher>();
         animator = GetComponent<Animator>();
         rect = GetComponent<RectTransform>();
+        canvasGroup = GetComponent<CanvasGroup>();
     }
 
     public void Setup(Sprite sprite)
@@ -19,20 +21,48 @@ public class SpriteController : MonoBehaviour
         switcher.SetImage(sprite); 
     }
 
-    public void Show(Vector2 coords) //affiche perso aux coordonées avec fade 
+    public void Show(Vector2 coords, bool isAnimated = true) //affiche perso aux coordonées avec fade 
     {
-        animator.SetTrigger("Show"); 
+        if (isAnimated)
+        {
+            animator.enabled = true; 
+            animator.SetTrigger("Show");
+        }
+        else
+        {
+            animator.enabled = false; //Doit être passé à faux pour change le canvas group
+            canvasGroup.alpha = 1f; 
+        }
+        
         rect.localPosition = coords; 
     }
 
-    public void Hide() //Disparition 
+    public void Hide(bool isAnimated = true) //Disparition 
     {
-        animator.SetTrigger("Hide"); 
+        if (isAnimated)
+        {
+            animator.enabled = true; 
+            switcher.SyncImages(); 
+            animator.SetTrigger("Hide");
+        }
+        else
+        {
+            animator.enabled = false;
+            canvasGroup.alpha = 0; 
+        }
     }
 
-    public void Move(Vector2 coords, float speed)
+    public void Move(Vector2 coords, float speed, bool isAnimated = true)
     {
-        StartCoroutine(MoveCoroutine(coords, speed));
+        if (isAnimated)
+        {
+            StartCoroutine(MoveCoroutine(coords, speed));
+        }
+        else
+        {
+            rect.localPosition = coords;
+        }
+        
     }
 
     private IEnumerator MoveCoroutine(Vector2 coords, float speed) //déplace progressivement 
@@ -44,11 +74,19 @@ public class SpriteController : MonoBehaviour
         }
     }
 
-    public void SwitchSprite(Sprite sprite)
+    public void SwitchSprite(Sprite sprite, bool isAnimated = true)
     {
         if(switcher.GetImage() != sprite) //evite de changer sprite inutilement 
         {
-            switcher.SwitchImage(sprite);  
+            if (isAnimated)
+            {
+                switcher.SwitchImage(sprite); 
+            }
+            else
+            {
+                switcher.SetImage(sprite);
+            }
+             
         }
     }
 }
