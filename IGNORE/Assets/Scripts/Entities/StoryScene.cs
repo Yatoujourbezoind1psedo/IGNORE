@@ -6,17 +6,20 @@ using UnityEngine;
 [System.Serializable]
 
 //Page de visual novel, scène de dialogue ou morceau d'histoire 
-public class StoryScene : ScriptableObject
+public class StoryScene : GameScene
 {
     public List<Sentence> sentences; //List de phrases 
     public Sprite background; //Image de fond
-    public StoryScene nextScene; //prochaine scène 
+    public GameScene nextScene; //prochaine scène 
 
     [System.Serializable] //Nécessaire pour l'afficher dans l'inspecteur
     public struct Sentence //Donc une ligne de dialogue 
     {
         public string text; //Ce qui est dit 
         public Speaker speaker; //et qui le dit 
+
+        public AudioClip music; 
+        public AudioClip sound; 
 
         public List<Action> actions;
 
@@ -37,3 +40,5 @@ public class StoryScene : ScriptableObject
         }
     }
 }
+
+public class GameScene : ScriptableObject{ }

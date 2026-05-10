@@ -12,6 +12,61 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ce8453813d2e894ea6a317ffee02775, type: 3}
   m_Name: Scene3
   m_EditorClassIdentifier: Assembly-CSharp::StoryScene
-  sentences: []
-  background: {fileID: 0}
-  nextScene: {fileID: 0}
+  sentences:
+  - text: C'est quoi ce bruit de con ?
+    speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
+    music: {fileID: 0}
+    sound: {fileID: 0}
+    actions:
+    - speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
+      spriteIndex: 0
+      actionType: 1
+      coords: {x: 400, y: 0}
+      moveSpeed: 0
+  - text: C'est discord ?
+    speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
+    music: {fileID: 0}
+    sound: {fileID: 0}
+    actions:
+    - speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
+      spriteIndex: 0
+      actionType: 2
+      coords: {x: 0, y: 0}
+      moveSpeed: 1
+    - speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
+      spriteIndex: 1
+      actionType: 0
+      coords: {x: 0, y: 0}
+      moveSpeed: 1
+  - text: ???
+    speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
+    music: {fileID: 0}
+    sound: {fileID: 0}
+    actions:
+    - speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
+      spriteIndex: 1
+      actionType: 0
+      coords: {x: 0, y: 0}
+      moveSpeed: 1
+  - text: "S\xE9rieux ?"
+    speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
+    music: {fileID: 0}
+    sound: {fileID: 0}
+    actions:
+    - speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
+      spriteIndex: 0
+      actionType: 0
+      coords: {x: 0, y: 0}
+      moveSpeed: 1
+  - text: "C'est quoi ce bruit de golmon s\xE9rieux ?"
+    speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
+    music: {fileID: 0}
+    sound: {fileID: 0}
+    actions:
+    - speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
+      spriteIndex: 0
+      actionType: 3
+      coords: {x: 0, y: 0}
+      moveSpeed: 1
+  background: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  nextScene: {fileID: 11400000, guid: cd5f7b16a433b5344a3f70f01901df1c, type: 2}

@@ -4,9 +4,12 @@ using UnityEngine.InputSystem;
 
 public class GameManagerVisualNovel : MonoBehaviour
 {
-    public StoryScene currentScene; 
+    public GameScene currentScene; 
     public BottomBarController bottomBarController; 
     public BackgroundController backgroundController;
+
+    public AudioController audioController;
+
     private State state = State.IDLE; 
 
     private enum State
@@ -15,8 +18,14 @@ public class GameManagerVisualNovel : MonoBehaviour
     }
     void Start()
     {
-        bottomBarController.PlayScene(currentScene); 
-        backgroundController.SetImage(currentScene.background); 
+        if(currentScene is StoryScene)
+        {
+            StoryScene storyScene = currentScene as StoryScene; 
+            bottomBarController.PlayScene(storyScene); 
+            backgroundController.SetImage(storyScene.background); 
+            PlayAudio(storyScene.sentences[0]); 
+        }
+
     }
 
     // Update is called once per frame
@@ -28,34 +37,61 @@ public class GameManagerVisualNovel : MonoBehaviour
             {
                 if (bottomBarController.IsLastSentence())
                 {
-                    PlayScene(currentScene.nextScene); 
+                    PlayScene((currentScene as StoryScene).nextScene); 
                 }
                 else
                 {
                     bottomBarController.PlayNextSentence(); 
+                    PlayAudio((currentScene as StoryScene).sentences[bottomBarController.GetSentenceIndex()]); 
                 }
                 
             }
         }
     }
 
-    private void PlayScene(StoryScene scene)
+    private void PlayScene(GameScene scene)
     {
         StartCoroutine(SwitchScene(scene)); 
     }
 
-    private IEnumerator SwitchScene(StoryScene scene)
+    //SOUCI ICI AVEC GAMESCENE avec CHOOSESCENE Script 
+    private IEnumerator SwitchScene(GameScene scene)
     {
         state = State.ANIMATE; 
         currentScene = scene; 
         bottomBarController.Hide();
         yield return new WaitForSeconds(1f);
-        backgroundController.SwitchImage(scene.background); 
-        yield return new WaitForSeconds(1f); 
-        bottomBarController.ClearText();
-        bottomBarController.Show(); 
-        yield return new WaitForSeconds(1f);  
-        bottomBarController.PlayScene(scene); 
-        state = State.IDLE; 
+
+        if(scene is StoryScene)
+        {
+            StoryScene storyScene = scene as StoryScene;
+            backgroundController.SwitchImage(storyScene.background); 
+
+            PlayAudio(storyScene.sentences[0]); //Va jouer juste l'audio présent sur la première sentence de la scène
+    
+            yield return new WaitForSeconds(1f); 
+            bottomBarController.ClearText();
+            bottomBarController.Show(); 
+            yield return new WaitForSeconds(1f);  
+            bottomBarController.PlayScene(storyScene); 
+            state = State.IDLE; 
+        }
+        /*
+        else if (scene is ChooseScene)
+        {
+            Debug.Log("ChooseScene"); //pas implémenté, sert si on veut faire des choix 
+            
+            state = State.CHOOSE; 
+            chooseController.SetupChoose(scene as ChooseScene); 
+            
+        }
+        */ 
+
+
+    }
+
+    private void PlayAudio(StoryScene.Sentence sentence)
+    {
+        audioController.PlayAudio(sentence.music, sentence.sound); 
     }
 }

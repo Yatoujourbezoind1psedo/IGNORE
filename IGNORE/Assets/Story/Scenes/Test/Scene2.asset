@@ -15,9 +15,18 @@ MonoBehaviour:
   sentences:
   - text: Ouais salut c'est greg
     speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
+    music: {fileID: 8300000, guid: 2accc1e8f348f8d4791f7c4981271187, type: 3}
+    sound: {fileID: 8300000, guid: 6d8377d766b048f49951fa981356f521, type: 3}
+    actions: []
   - text: Ouais salut c'est le fils de greg
     speaker: {fileID: 11400000, guid: 09755ce2d4251dc41a44db821174246b, type: 2}
-  - text: Ouais salut c'est le pompierrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+    music: {fileID: 0}
+    sound: {fileID: 8300000, guid: 6d8377d766b048f49951fa981356f521, type: 3}
+    actions: []
+  - text: Ouais salut c'est le pompierrrrrr
     speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
+    music: {fileID: 0}
+    sound: {fileID: 0}
+    actions: []
   background: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
-  nextScene: {fileID: 11400000, guid: cd5f7b16a433b5344a3f70f01901df1c, type: 2}
+  nextScene: {fileID: 11400000, guid: 3d01aed6011cc8d4e95e00744b5426b3, type: 2}
