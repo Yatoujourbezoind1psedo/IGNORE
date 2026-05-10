@@ -42,22 +42,17 @@ MonoBehaviour:
     speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
     music: {fileID: 0}
     sound: {fileID: 0}
-    actions:
-    - speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
-      spriteIndex: 1
-      actionType: 0
-      coords: {x: 0, y: 0}
-      moveSpeed: 1
+    actions: []
   - text: "S\xE9rieux ?"
     speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
     music: {fileID: 0}
-    sound: {fileID: 0}
+    sound: {fileID: 8300000, guid: 6d8377d766b048f49951fa981356f521, type: 3}
     actions:
     - speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
       spriteIndex: 0
       actionType: 0
       coords: {x: 0, y: 0}
-      moveSpeed: 1
+      moveSpeed: 0
   - text: "C'est quoi ce bruit de golmon s\xE9rieux ?"
     speaker: {fileID: 11400000, guid: a1f91bd31dcecaa4b8575201d39313aa, type: 2}
     music: {fileID: 0}

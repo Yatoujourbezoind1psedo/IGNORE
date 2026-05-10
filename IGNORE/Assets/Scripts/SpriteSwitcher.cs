@@ -14,7 +14,7 @@ public class SpriteSwitcher : MonoBehaviour
     }
     public void SwitchImage(Sprite sprite) //pour avoir une transition douce 
     {
-        if (isSwitched)
+        if (!isSwitched)
         {
             image2.sprite = sprite; 
             animator.SetTrigger("SwitchFirst");
@@ -29,25 +29,25 @@ public class SpriteSwitcher : MonoBehaviour
     
     public void SetImage(Sprite sprite) //pour changer abruptement 
     {
-        if (isSwitched)
+        if (!isSwitched)
         {
-            image2.sprite = sprite; 
+            image1.sprite = sprite; 
         }
         else
         {
-            image1.sprite = sprite; 
+            image2.sprite = sprite; 
         }
     }
 
     public Sprite GetImage()
     {
-        if (isSwitched)
+        if (!isSwitched)
         {
-            return image2.sprite; 
+            return image1.sprite; 
         }
         else
         {
-            return image1.sprite; 
+            return image2.sprite; 
         }
     }
 }
