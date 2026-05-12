@@ -238,7 +238,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3de06bc76fbf6c14ebd260ecc9d74214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuController
-  gameScene: VisualNovel
+  loaderScene: Loader
   musicValue: {fileID: 317129114}
   soundsValue: {fileID: 1366771526}
   voiceValue: {fileID: 986880665}

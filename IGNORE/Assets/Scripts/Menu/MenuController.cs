@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class MenuController : MonoBehaviour
 {
     private Animator animator; 
-    [SerializeField] private string gameScene;
+    [SerializeField] private string loaderScene;
 
     //Textes
     public TextMeshProUGUI musicValue, soundsValue, voiceValue; 
@@ -41,7 +41,7 @@ public class MenuController : MonoBehaviour
 
     public void Load()
     {
-        SceneManager.LoadScene(gameScene, LoadSceneMode.Single); //La nouvelle scène va prendre la place de la précédente et pas de mémoire sup
+        SceneManager.LoadScene(loaderScene, LoadSceneMode.Additive); //La nouvelle scène va prendre la place de la précédente et pas de mémoire sup
 
     }
 
