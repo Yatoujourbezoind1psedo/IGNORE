@@ -243,6 +243,7 @@ MonoBehaviour:
   soundsValue: {fileID: 1366771526}
   musicMixer: {fileID: 24100000, guid: 02c5dbeab8f5717468573f105a9f73be, type: 2}
   soundsMixer: {fileID: 24100000, guid: e48b678428d57fd49a436dab39de84eb, type: 2}
+  loadButton: {fileID: 1366720969}
 --- !u!95 &95109052
 Animator:
   serializedVersion: 7
@@ -2320,7 +2321,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1366720970}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 95109051}
+        m_TargetAssemblyTypeName: MenuController, Assembly-CSharp
+        m_MethodName: Load
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1366720970
 MonoBehaviour:
   m_ObjectHideFlags: 0

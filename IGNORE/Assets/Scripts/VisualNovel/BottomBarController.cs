@@ -36,6 +36,11 @@ public class BottomBarController : MonoBehaviour
         return sentenceIndex; 
     }
 
+    public void SetSentenceIndex(int sentenceIndex) //utilisé quand load du jeu
+    {
+        this.sentenceIndex = sentenceIndex;
+    }
+
     public void Hide() //Cache la barre avec tout le texte
     {
         if (!isHidden)

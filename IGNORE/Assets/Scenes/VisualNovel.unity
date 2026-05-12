@@ -931,6 +931,8 @@ MonoBehaviour:
   bottomBarController: {fileID: 400754419}
   backgroundController: {fileID: 1355817845}
   audioController: {fileID: 1800963436}
+  data: {fileID: 11400000, guid: 96e3bf222982e0e4aa0ac54c82da797a, type: 2}
+  menuScene: Menu
 --- !u!4 &942542377
 Transform:
   m_ObjectHideFlags: 0

@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement; 
 using TMPro; 
 using UnityEngine.Audio; 
+using UnityEngine.UI;
 
 public class MenuController : MonoBehaviour
 {
@@ -15,11 +16,14 @@ public class MenuController : MonoBehaviour
     //Mixers
     public AudioMixer musicMixer, soundsMixer; 
 
+    public Button loadButton; //POur le rendre actif s'il y a une sauvegarde 
+
     //variable global
     private int _window = 0; 
     private void Start()
     {
         animator = GetComponent<Animator>();
+        loadButton.interactable = SaveManager.IsGameSaved(); 
     }
 
     private void Update()
@@ -32,7 +36,14 @@ public class MenuController : MonoBehaviour
     }
     public void NewGame()
     {
+        SaveManager.ClearSavedGame(); 
+        Load(); 
+    }
+
+    public void Load()
+    {
         SceneManager.LoadScene(gameScene, LoadSceneMode.Single); //La nouvelle scène va prendre la place de la précédente et pas de mémoire sup
+
     }
 
     public void Quit()
