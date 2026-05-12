@@ -11,10 +11,10 @@ public class MenuController : MonoBehaviour
     [SerializeField] private string gameScene;
 
     //Textes
-    public TextMeshProUGUI musicValue, soundsValue; 
+    public TextMeshProUGUI musicValue, soundsValue, voiceValue; 
 
     //Mixers
-    public AudioMixer musicMixer, soundsMixer; 
+    public AudioMixer musicMixer, soundsMixer, voiceMixer; 
 
     public Button loadButton; //POur le rendre actif s'il y a une sauvegarde 
 
@@ -31,7 +31,6 @@ public class MenuController : MonoBehaviour
         if (Keyboard.current.escapeKey.wasPressedThisFrame && _window == 1) //window permet de pas afficher tout le temps 
         {
             HideOptions(); 
-            _window = 0; 
         }
     }
     public void NewGame()
@@ -60,6 +59,7 @@ public class MenuController : MonoBehaviour
     public void HideOptions()
     {
         animator.SetTrigger("HideOptions"); 
+        _window = 0; 
     }
 
     //Les textes
@@ -73,5 +73,11 @@ public class MenuController : MonoBehaviour
     {
         soundsValue.SetText(value + "%"); 
         soundsMixer.SetFloat("volume", -50 + value /2); 
+    }
+
+    public void OnVoiceChanged(float value)
+    {
+        voiceValue.SetText(value + "%"); 
+        voiceMixer.SetFloat("volume", -50 + value /2); 
     }
 }

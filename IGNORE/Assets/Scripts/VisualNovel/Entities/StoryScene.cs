@@ -18,8 +18,7 @@ public class StoryScene : GameScene
         public string text; //Ce qui est dit 
         public Speaker speaker; //et qui le dit 
 
-        public AudioClip music; 
-        public AudioClip sound; 
+        public AudioClip music, sound, voiceAudio; 
 
         public List<Action> actions;
 

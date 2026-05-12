@@ -19,6 +19,9 @@ public class BottomBarController : MonoBehaviour
     //pour accélérer le texte 
     public Coroutine typingCoroutine; 
     private float speedFactor = 1f; 
+
+    //POur voix
+    public AudioSource voicePlayer; 
     
     private enum State //machine à état 
     {
@@ -92,10 +95,22 @@ public class BottomBarController : MonoBehaviour
 
     private void PlaySentence(bool isAnimated = true)
     {
+        StoryScene.Sentence sentence = currentScene.sentences[sentenceIndex];
         speedFactor = 1f;
-        typingCoroutine = StartCoroutine(TypeText(currentScene.sentences[sentenceIndex].text)); //récupère le texte de la première phrase de la scène
-        personNameText.text = currentScene.sentences[sentenceIndex].speaker.SpeakerName; 
-        personNameText.color = currentScene.sentences[sentenceIndex].speaker.TextColor; 
+        typingCoroutine = StartCoroutine(TypeText(sentence.text)); //récupère le texte de la première phrase de la scène
+        personNameText.text = sentence.speaker.SpeakerName; 
+        personNameText.color = sentence.speaker.TextColor;
+
+        //Gère blabal de perso
+        if (sentence.voiceAudio)
+        {
+            voicePlayer.clip = sentence.voiceAudio;
+            voicePlayer.Play();
+        }
+        else //du coup le son joue très vite si on skip le texte 
+        {
+            voicePlayer.Stop(); //SI ya pas de blabla de perso alors tg
+        }
         ActSpeakers(isAnimated); 
     }
 
