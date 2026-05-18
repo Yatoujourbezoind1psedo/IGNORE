@@ -297,6 +297,7 @@ yPixel = (int)(v * totalYPixels);*/
 
     private void InsideTheCircle(List<Vector2> polygon)
     {
+        List<Letter> lettersToRemove = new List<Letter>(); 
         
         foreach(Letter letter in letters)
         {
@@ -307,8 +308,25 @@ yPixel = (int)(v * totalYPixels);*/
             // xPixel = (int)((point.localPosition.x - topLeftCorner.localPosition.x) * xMult); 
             {
                 Debug.Log("Lettre entourée : " + letter.letterValue);
+
+                lettersToRemove.Add(letter); //Travail terminé pour la lettre 
+
+                
             }
         }
+
+        //Détruit les lettres entourées 
+        foreach(Letter letter in lettersToRemove)
+        {
+            EraseLetter(letter); 
+        }
+
+        if(lettersToRemove.Count > 0) //Se déclenche qui  si au moins une lettre (à voir)
+        {
+            //On annule le pinceau pour éviter des problèmes 
+            ResetPinceau(); 
+        }
+        
     }
 
     public void AddLetter(Letter letter)
@@ -319,6 +337,7 @@ yPixel = (int)(v * totalYPixels);*/
 
     public void EraseLetter(Letter letter)
     {
-        Debug.Log("EFFACE"); 
+        letters.Remove(letter); 
+        Destroy(letter.gameObject); 
     }
 }
