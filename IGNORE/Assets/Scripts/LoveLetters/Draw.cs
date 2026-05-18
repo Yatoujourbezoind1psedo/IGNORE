@@ -1,4 +1,5 @@
-using System;
+using System.Security.Cryptography;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -43,8 +44,18 @@ public class Draw : MonoBehaviour
 
     //Ajout d'un maximum pour le pinceau
     [SerializeField] private int maxPinceau = 100; 
-    private int valPinceau; 
-    
+    [SerializeField] private float brushCostPerPixel = 0.2f;
+    private float valPinceau; 
+
+    //Tracé du pinceau action 
+    List<Vector2> drawnPoints = new List<Vector2>(); //Va permettre de conserver une liste des points dessinés 
+    [SerializeField] private float minPointDistance = 5f; //Pour éviter que les points se rajoutent sans cesse dans drawnPoints 
+
+    //lettres 
+    private List<Letter> letters = new List<Letter>(); 
+    [SerializeField] private Transform canvasTransform; // nécessaire pour la fonction pour savoir où se trouve les lettres dans le canvas dans letters 
+    private Vector3 topLeftLocal, bottomRightLocal; //Sert de conversion pour garder valeur dans le monde
+
     void Start()
     {
         colorMap = new Color[totalXPixels * totalYPixels]; //Initialisation color map
@@ -54,8 +65,11 @@ public class Draw : MonoBehaviour
 
         ResetColor(); //Reset la couleur du canvas à blanc
 
-        xMult = totalXPixels / (bottomRightCorner.localPosition.x - topLeftCorner.localPosition.x); //Precalculating constants 
-        yMult = totalYPixels / (bottomRightCorner.localPosition.y - topLeftCorner.localPosition.y);
+        topLeftLocal = canvasTransform.InverseTransformPoint(topLeftCorner.position); 
+        bottomRightLocal = canvasTransform.InverseTransformPoint(bottomRightCorner.position); 
+
+        xMult = (float)totalXPixels / (bottomRightLocal.x - topLeftLocal.x); //Precalculating constants 
+        yMult = (float)totalYPixels / (bottomRightLocal.y - topLeftLocal.y);
 
         //Pinceau valeur
         valPinceau = maxPinceau; 
@@ -65,13 +79,12 @@ public class Draw : MonoBehaviour
     {
         if (Mouse.current.leftButton.isPressed)
         {
-            //DecreasePinceau(); 
             CalculatePixel();
         }
-        else
+        else if (Mouse.current.leftButton.wasReleasedThisFrame)
         {
             pressedLastFrame = false; //Pas d'interpolation à la frame si pas pressé
-            ReleaseButton(); 
+            ResetPinceau(); 
         }
     }
 
@@ -86,7 +99,8 @@ public class Draw : MonoBehaviour
             }
 
             //Gestion du pinceau
-            DecreasePinceau(); 
+            float distFloat = Vector2.Distance(new Vector2(lastX, lastY), new Vector2(xPixel, yPixel)); //Calcul de la distance (plus précis en float)
+            DecreasePinceau(distFloat); 
         }
         else //pas interpolation
         {
@@ -99,30 +113,52 @@ public class Draw : MonoBehaviour
         SetTexture(); 
     }
 
-    private void DecreasePinceau()
+    private void DecreasePinceau(float dist)
     {
         if(valPinceau > 0)
         {
-            valPinceau -= 1;
+            valPinceau -= dist * brushCostPerPixel; //Réduit par la distance * cout en pixel (permet que si joueur dessine lentement alors même taille que dessiné rapidement)
 
         }
-        else
+        else //si le pinceau arrive à zéro ou en dessous alors on efface tout
         {
-            ReleaseButton(); 
+            ResetPinceau(); 
         }
-        Debug.Log(valPinceau);
     }
 
     private void CalculatePixel()
     {
         Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue()); 
-        RaycastHit hit; 
-        if(Physics.Raycast(ray, out hit, 10f))
-        {
+        //RaycastHit hit; 
+        if(Physics.Raycast(ray, out RaycastHit hit, 10f)) //(Physics.Raycast(ray, out hit, 10f))
+        {/*
             point.position = hit.point; 
             xPixel = (int)((point.localPosition.x - topLeftCorner.localPosition.x) * xMult); 
-            yPixel = (int)((point.localPosition.y - topLeftCorner.localPosition.y) * yMult); 
+            yPixel = (int)((point.localPosition.y - topLeftCorner.localPosition.y) * yMult); */
+            
+            Vector3 localHit = canvasTransform.InverseTransformPoint(hit.point);
+            //Debug.Log(localHit); 
+            xPixel = (int)((localHit.x - topLeftLocal.x) * xMult); 
+            yPixel = (int)((localHit.y - topLeftLocal.y) * yMult); 
+            /*
+            Vector2 uv = hit.textureCoord; 
+            xPixel= (int)(uv.x * totalXPixels); 
+            yPixel= (int)(uv.y * totalYPixels);*/
 
+            
+            //Ajout du point dans la liste qui conserve tracé
+            Vector2 newPoint = new Vector2(xPixel, yPixel); 
+            
+
+            if(drawnPoints.Count == 0 || Vector2.Distance(drawnPoints[drawnPoints.Count - 1], newPoint) > minPointDistance) //Permet de mettre une distance minimum
+            {
+                drawnPoints.Add(new Vector2(xPixel, yPixel)); 
+                Debug.Log(drawnPoints[drawnPoints.Count-1]); 
+
+                CheckSelfIntersection(); //on vérifie s'il y a une boucle
+            }
+
+            //Afficher les pixels 
             ChangePixelsAroundPoint();
         }
         else
@@ -179,9 +215,98 @@ public class Draw : MonoBehaviour
         SetTexture(); 
     }
 
-    private void ReleaseButton()
+    private void ResetPinceau()
     {
         valPinceau = maxPinceau;
+        drawnPoints.Clear(); //Permet de dire que les points sont à refaire 
         ResetColor(); 
+    }
+
+    private bool Intersects(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2) //Segment A coupe segment B ? 
+    {
+        float d = (a2.x - a1.x) * (b2.y - b1.y) - (a2.y - a1.y) * (b2.x - b1.x); //Segment parallèle ? : oui d = 0 
+
+        if(Mathf.Abs(d) < 0.0001f)
+        {
+            return false; 
+        }
+
+        float u = ((b1.x - a1.x) * (b2.y - b1.y) - (b1.y - a1.y) * (b2.x - b1.x)) / d; //  = 0 : début / = 1 : fin du segment 
+
+        float v = ((b1.x - a1.x) * (a2.y - a1.y) - (b1.y - a1.y) * (a2.x - a1.x)) / d; 
+
+        return (u >= 0 && u <= 1 && v >= 0 && v <= 1); //Vérifie qu'intersection bien sur segment
+    }
+
+
+    private void CheckSelfIntersection() //Vérifie si nouveau segment coupe un ancien segment 
+    {
+        if(drawnPoints.Count < 4) // Au moins deux segments anciens et 1 nouveau segment nécessaire donc A - B - C - D = 4 points
+        {
+            return; 
+        }
+
+        Vector2 newA = drawnPoints[drawnPoints.Count - 2]; // Récupère avant dernier point : newA -> newB
+        Vector2 newB = drawnPoints[drawnPoints.Count - 1]; //récupère dernier point
+
+        for (int i = 0; i < drawnPoints.Count - 10; i++) //Parcours les anciens segments / - 3 parce qu'enlève les deux derniers points qui sont les nouveaux à tester (si on teste P4 -> P5, alors forcément P3 -> P4 touche) / - 10 pour éviter que si on revient en arrière ce soit trop la merde
+        {
+            Vector2 oldA = drawnPoints[i]; 
+            Vector2 oldB = drawnPoints[i + 1]; 
+
+            if(Intersects(newA, newB, oldA, oldB)){//Si une intersection est trouvée 
+                List<Vector2> loopPoints = new List<Vector2>(); 
+
+                for (int j = i; j < drawnPoints.Count; j++)//Je rajoute tous les points à partir de l'intersection 
+                {
+                    loopPoints.Add(drawnPoints[j]); 
+                }
+
+                InsideTheCircle(loopPoints); 
+            }
+        }
+    }
+
+    bool IsPointInside(Vector2 p, List<Vector2> poly) // permet de savoir si un point est dans un polygone
+    {
+        bool inside = false;
+
+        for (int i = 0, j = poly.Count - 1; i < poly.Count; j = i++) //Algo de PNPOLY de W.Randolph Franklin 
+        {
+            if (((poly[i].y > p.y) != (poly[j].y > p.y)) && 
+            (p.x < (poly[j].x - poly[i].x) * (p.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x))
+            {
+                inside = !inside;
+            }
+        }
+
+        return inside;
+    }
+
+    private void InsideTheCircle(List<Vector2> polygon)
+    {
+        
+        foreach(Letter letter in letters)
+        {
+            Vector2 screenPos = letter.GetPositionInCanvas(canvasTransform, topLeftLocal, bottomRightLocal, totalXPixels, totalYPixels); 
+            Debug.Log(screenPos); 
+
+            if(IsPointInside(screenPos, polygon)) //Souci ici avec xPixel et yPixel qui est pas sur la même valeur et localPosition 
+            // xPixel = (int)((point.localPosition.x - topLeftCorner.localPosition.x) * xMult); 
+            {
+                Debug.Log("Lettre entourée : " + letter.letterValue);
+            }
+        }
+    }
+
+    public void AddLetter(Letter letter)
+    {
+        letters.Add(letter);
+        
+    }
+
+    public void EraseLetter(Letter letter)
+    {
+        Debug.Log("EFFACE"); 
     }
 }
