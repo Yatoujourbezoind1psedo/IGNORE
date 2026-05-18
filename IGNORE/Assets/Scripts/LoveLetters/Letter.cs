@@ -5,11 +5,11 @@ using TMPro;
 public class Letter : MonoBehaviour
 {
     public string letterValue; 
-    private TextMeshProUGUI visuel; 
+    private TextMeshPro visuel; 
 
     private void Awake()
     {
-        visuel = GetComponentInChildren<TextMeshProUGUI>();
+        visuel = GetComponentInChildren<TextMeshPro>();
 
         SetLetterValue(letterValue); 
     }
@@ -40,9 +40,11 @@ public class Letter : MonoBehaviour
         
 
         Vector3 localPos = canvasTransform.InverseTransformPoint(transform.position); // Convertit une position du monde unity en position locale par rapport à un objet
-        Debug.Log(localPos);
+        
         float x = (int)((localPos.x - topLeftLocal.x) * xMult);
         float y = (int)((localPos.y - topLeftLocal.y) * yMult);
+
+        //Debug.Log("Letter value" + new Vector2(x, y));
 
         return new Vector2(x, y);
     }

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 //https://pastebin.com/1X0wgrqw
+//https://www.youtube.com/watch?v=qOP83fot3c0
 
 public class Draw : MonoBehaviour
 {
@@ -137,14 +138,25 @@ public class Draw : MonoBehaviour
             yPixel = (int)((point.localPosition.y - topLeftCorner.localPosition.y) * yMult); */
             
             Vector3 localHit = canvasTransform.InverseTransformPoint(hit.point);
-            //Debug.Log(localHit); 
+            
             xPixel = (int)((localHit.x - topLeftLocal.x) * xMult); 
             yPixel = (int)((localHit.y - topLeftLocal.y) * yMult); 
+
+            //Debug.Log(new Vector2(xPixel, yPixel)); 
             /*
             Vector2 uv = hit.textureCoord; 
             xPixel= (int)(uv.x * totalXPixels); 
             yPixel= (int)(uv.y * totalYPixels);*/
 
+/*
+            Vector3 hitLocal = canvasTransform.InverseTransformPoint(hit.point);
+
+float u = (hitLocal.x - topLeftLocal.x) / (bottomRightLocal.x - topLeftLocal.x);
+float v = (hitLocal.y - bottomRightLocal.y) / (topLeftLocal.y - bottomRightLocal.y);
+
+
+            xPixel = (int)(u * totalXPixels);
+yPixel = (int)(v * totalYPixels);*/
             
             //Ajout du point dans la liste qui conserve tracé
             Vector2 newPoint = new Vector2(xPixel, yPixel); 
@@ -153,7 +165,7 @@ public class Draw : MonoBehaviour
             if(drawnPoints.Count == 0 || Vector2.Distance(drawnPoints[drawnPoints.Count - 1], newPoint) > minPointDistance) //Permet de mettre une distance minimum
             {
                 drawnPoints.Add(new Vector2(xPixel, yPixel)); 
-                Debug.Log(drawnPoints[drawnPoints.Count-1]); 
+                //Debug.Log(drawnPoints[drawnPoints.Count-1]); 
 
                 CheckSelfIntersection(); //on vérifie s'il y a une boucle
             }
@@ -289,7 +301,7 @@ public class Draw : MonoBehaviour
         foreach(Letter letter in letters)
         {
             Vector2 screenPos = letter.GetPositionInCanvas(canvasTransform, topLeftLocal, bottomRightLocal, totalXPixels, totalYPixels); 
-            Debug.Log(screenPos); 
+            //Debug.Log(screenPos); 
 
             if(IsPointInside(screenPos, polygon)) //Souci ici avec xPixel et yPixel qui est pas sur la même valeur et localPosition 
             // xPixel = (int)((point.localPosition.x - topLeftCorner.localPosition.x) * xMult); 
