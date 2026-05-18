@@ -192,9 +192,10 @@ MonoBehaviour:
   point: {fileID: 395919519}
   material: {fileID: 2100000, guid: ffc8fec455402b74ea5effacc9d5a091, type: 2}
   generatedTexture: {fileID: 0}
-  maxPinceau: 500
+  maxPinceau: 200
   brushCostPerPixel: 0.2
   minPointDistance: 5
+  canvasTransform: {fileID: 501764516}
 --- !u!4 &126127161
 Transform:
   m_ObjectHideFlags: 0
