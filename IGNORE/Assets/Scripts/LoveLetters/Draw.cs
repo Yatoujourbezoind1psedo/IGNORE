@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.VisualScripting;
 
 //https://pastebin.com/1X0wgrqw
 //https://www.youtube.com/watch?v=qOP83fot3c0
@@ -56,6 +57,9 @@ public class Draw : MonoBehaviour
     private List<Letter> letters = new List<Letter>(); 
     [SerializeField] private Transform canvasTransform; // nécessaire pour la fonction pour savoir où se trouve les lettres dans le canvas dans letters 
     private Vector3 topLeftLocal, bottomRightLocal; //Sert de conversion pour garder valeur dans le monde
+
+    //Variable pour le spawn de lettre
+    [SerializeField] private LetterSpawn letterSpawn; 
 
     void Start()
     {
@@ -307,8 +311,12 @@ yPixel = (int)(v * totalYPixels);*/
             if(IsPointInside(screenPos, polygon)) //Souci ici avec xPixel et yPixel qui est pas sur la même valeur et localPosition 
             // xPixel = (int)((point.localPosition.x - topLeftCorner.localPosition.x) * xMult); 
             {
-                Debug.Log("Lettre entourée : " + letter.letterValue);
+                //Debug.Log("Lettre entourée : " + letter.letterValue);
 
+
+                //ICI AJOUT DE L'ACTION QUAND UNE LETTRE EST AJOUTEE
+                letterSpawn.CheckLetter(letter.letterValue); 
+                
                 lettersToRemove.Add(letter); //Travail terminé pour la lettre 
 
                 
@@ -338,6 +346,6 @@ yPixel = (int)(v * totalYPixels);*/
     public void EraseLetter(Letter letter)
     {
         letters.Remove(letter); 
-        Destroy(letter.gameObject); 
+        Destroy(letter.gameObject, 0.2f); //Destruction avec un peu de délai 
     }
 }

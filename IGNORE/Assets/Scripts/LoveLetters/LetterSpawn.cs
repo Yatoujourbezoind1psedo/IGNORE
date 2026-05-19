@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
+//https://www.youtube.com/watch?v=30FpzpFNY-E&t=1698s
 public class LetterSpawn : MonoBehaviour
 {
     [SerializeField] private GameObject letterPrefab; 
@@ -8,28 +10,102 @@ public class LetterSpawn : MonoBehaviour
     [SerializeField] private Draw drawScript; 
     [SerializeField] private Transform lettersSpawn; //Endroit où les lettres seront rangées 
 
-    // Update is called once per frame
+    [SerializeField] private TextAsset possibleWord; //mot à deviner
+    [SerializeField] private GameObject wordContainer, letterContainer; //zone contenant chaque lettre du mot
+
+    private int correctGuesses; 
+    private string word; 
+
+    private bool isGameFinished = false; 
+
+    void Start()
+    {
+        InitialiseGame(); 
+    }
+
     void Update()
     {
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-
-            GameObject clone = Instantiate(letterPrefab, lettersSpawn); //Instanciation du prefab dans lettersSpawn
-
-            //Definition de la position locale à donner
-            clone.transform.localPosition = new Vector3(Random.Range(-0.45f, 0.45f), Random.Range(-0.45f, 0.45f), 0);  //0.45 parce que la taille du cube = 1 divisé par 2 (et 0.05 de marge)
+            SpawnRandomLetter(); 
             
-            //Récupération du script 
-            Letter letterScript = clone.GetComponent<Letter>();
+        }
+    }
 
-            //Pour lui donner une lettre quelconque 
-            string randomLetter = ((char)Random.Range(65, 91)).ToString();//65 = A et Z = 90 mais exclusion borne majorante (A CHANGER PROBABLEMENT POUR AVOIR LETTRES DE MOTS)
-            letterScript.SetLetterValue(randomLetter); 
+    private void InitialiseGame()
+    {
+        //reset data to original state
+        correctGuesses = 0; 
+        foreach(Transform child in wordContainer.GetComponentInChildren<Transform>())
+        {
+            Destroy(child.gameObject); 
+        }
 
-            //Spawn lettre en 0.45 et - 0.45 pour x et y 
-            //Ajout du script letter dans draw 
-            drawScript.AddLetter(letterScript) ; 
-            //Debug.Log(letterScript.transform.localPosition); 
+        //Generate new word 
+        word = GenerateWord().ToUpper(); //POur avoir tout en MAJ
+        foreach(char letter in word)
+        {
+            var temp = Instantiate(letterContainer, wordContainer.transform); 
+            temp.GetComponentInChildren<TextMeshProUGUI>().text = letter.ToString().ToUpper();
+        }
+    }
+
+    private string GenerateWord()//Prend un mot aléatoire dans la liste qui lui est fourni 
+    {
+        string[] wordList = possibleWord.text.Split("\n"); 
+        string line = wordList[Random.Range(0, wordList.Length - 1)]; //-1 pour enlever /\n 
+        return line.Substring(0, line.Length - 1);
+    }
+
+    public void SpawnRandomLetter()
+    {
+        GameObject clone = Instantiate(letterPrefab, lettersSpawn); //Instanciation du prefab dans lettersSpawn
+
+        //Definition de la position locale à donner
+        clone.transform.localPosition = new Vector3(Random.Range(-0.45f, 0.45f), Random.Range(-0.45f, 0.45f), 0);  //0.45 parce que la taille du cube = 1 divisé par 2 (et 0.05 de marge)
+        
+        //Récupération du script 
+        Letter letterScript = clone.GetComponent<Letter>();
+
+        //Pour lui donner une lettre quelconque 
+        string randomLetter = ((char)Random.Range(65, 91)).ToString();//65 = A et Z = 90 mais exclusion borne majorante (A CHANGER PROBABLEMENT POUR AVOIR LETTRES DE MOTS)
+        letterScript.SetLetterValue(randomLetter); 
+
+        //Spawn lettre en 0.45 et - 0.45 pour x et y 
+        //Ajout du script letter dans draw 
+        drawScript.AddLetter(letterScript) ; 
+        //Debug.Log(letterScript.transform.localPosition); 
+    }
+
+    public void CheckLetter(string letter)//Cherche letter dans mot 
+    {
+        if (!isGameFinished)
+        {
+            for(int i = 0; i < word.Length; i++){ //Souci avec détection de la même lettre + avec lettres doubles, seul al première ezst affichée 
+            if(letter == word[i].ToString() && wordContainer.GetComponentsInChildren<TextMeshProUGUI>()[i].color != Color.yellow){ //si la lettre est trouvée et qu'elle a pas déjà été rajoutée
+                Debug.Log(letter + " in " + word); 
+                correctGuesses ++; 
+
+                wordContainer.GetComponentsInChildren<TextMeshProUGUI>()[i].color = Color.yellow; //affiche la lettre 
+                CheckOutcome(); //Donc mot complètement fini
+                
+                return; //pas return = valdiation des lettres identiques  
+            }
+        }
+        }
+
+    }
+
+    private void CheckOutcome()
+    {
+        if(correctGuesses == word.Length) //Si toute sles lettres sont trouvées 
+        {
+            isGameFinished = true; 
+            for(int i = 0; i < word.Length; i++)
+            {
+                wordContainer.GetComponentsInChildren<TextMeshProUGUI>()[i].color = Color.red; //Met toutes les lettre en vert
+            }
+            
         }
     }
 }
