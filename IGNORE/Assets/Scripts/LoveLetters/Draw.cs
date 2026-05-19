@@ -54,7 +54,6 @@ public class Draw : MonoBehaviour
     [SerializeField] private float minPointDistance = 5f; //Pour éviter que les points se rajoutent sans cesse dans drawnPoints 
 
     //lettres 
-    private List<Letter> letters = new List<Letter>(); 
     [SerializeField] private Transform canvasTransform; // nécessaire pour la fonction pour savoir où se trouve les lettres dans le canvas dans letters 
     private Vector3 topLeftLocal, bottomRightLocal; //Sert de conversion pour garder valeur dans le monde
 
@@ -303,7 +302,7 @@ yPixel = (int)(v * totalYPixels);*/
     {
         List<Letter> lettersToRemove = new List<Letter>(); 
         
-        foreach(Letter letter in letters)
+        foreach(Letter letter in letterSpawn.letters)
         {
             Vector2 screenPos = letter.GetPositionInCanvas(canvasTransform, topLeftLocal, bottomRightLocal, totalXPixels, totalYPixels); 
             //Debug.Log(screenPos); 
@@ -326,7 +325,7 @@ yPixel = (int)(v * totalYPixels);*/
         //Détruit les lettres entourées 
         foreach(Letter letter in lettersToRemove)
         {
-            EraseLetter(letter); 
+            letterSpawn.EraseLetter(letter); 
         }
 
         if(lettersToRemove.Count > 0) //Se déclenche qui  si au moins une lettre (à voir)
@@ -335,17 +334,5 @@ yPixel = (int)(v * totalYPixels);*/
             ResetPinceau(); 
         }
         
-    }
-
-    public void AddLetter(Letter letter)
-    {
-        letters.Add(letter);
-        
-    }
-
-    public void EraseLetter(Letter letter)
-    {
-        letters.Remove(letter); 
-        Destroy(letter.gameObject, 0.2f); //Destruction avec un peu de délai 
     }
 }

@@ -1,8 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
+using System.Collections.Generic;
 
 //https://www.youtube.com/watch?v=30FpzpFNY-E&t=1698s
+
+//Gère le spawn des lettres mais est un gérant des lettres au final
 public class LetterSpawn : MonoBehaviour
 {
     [SerializeField] private GameObject letterPrefab; 
@@ -18,11 +21,16 @@ public class LetterSpawn : MonoBehaviour
 
     private bool isGameFinished = false; 
 
+    [SerializeField] private int nbRandomLetter = 10; 
+    //Création d'une liste contenant toutes les lettres (en public car Draw.cs)
+    public List<Letter> letters = new List<Letter>(); 
+
     void Start()
     {
         InitialiseGame(); 
     }
 
+    /*TEST
     void Update()
     {
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
@@ -30,7 +38,7 @@ public class LetterSpawn : MonoBehaviour
             SpawnRandomLetter(); 
             
         }
-    }
+    }*/
 
     private void InitialiseGame()
     {
@@ -47,6 +55,14 @@ public class LetterSpawn : MonoBehaviour
         {
             var temp = Instantiate(letterContainer, wordContainer.transform); 
             temp.GetComponentInChildren<TextMeshProUGUI>().text = letter.ToString().ToUpper();
+
+            //Intialisation des lettres sur terrain qui sont dans mots
+            SpawnLetter(letter.ToString().ToUpper()); 
+        }
+
+        for(int i = 0; i < nbRandomLetter; i++)//Pour faire apparaitre un nombre de lettre random
+        {
+            SpawnRandomLetter(); 
         }
     }
 
@@ -57,7 +73,23 @@ public class LetterSpawn : MonoBehaviour
         return line.Substring(0, line.Length - 1);
     }
 
-    public void SpawnRandomLetter()
+    private void SpawnLetter(string letter)
+    {
+        GameObject clone = Instantiate(letterPrefab, lettersSpawn);
+
+        //Definition de la position locale à donner
+        clone.transform.localPosition = new Vector3(Random.Range(-0.45f, 0.45f), Random.Range(-0.45f, 0.45f), 0);  
+        
+        //Récupération du script 
+        Letter letterScript = clone.GetComponent<Letter>();
+
+        //Pour lui donner la lettre en para 
+        letterScript.SetLetterValue(letter); 
+
+        AddLetter(letterScript) ;
+    }
+
+    private void SpawnRandomLetter()
     {
         GameObject clone = Instantiate(letterPrefab, lettersSpawn); //Instanciation du prefab dans lettersSpawn
 
@@ -73,7 +105,7 @@ public class LetterSpawn : MonoBehaviour
 
         //Spawn lettre en 0.45 et - 0.45 pour x et y 
         //Ajout du script letter dans draw 
-        drawScript.AddLetter(letterScript) ; 
+        AddLetter(letterScript) ; 
         //Debug.Log(letterScript.transform.localPosition); 
     }
 
@@ -82,16 +114,16 @@ public class LetterSpawn : MonoBehaviour
         if (!isGameFinished)
         {
             for(int i = 0; i < word.Length; i++){ //Souci avec détection de la même lettre + avec lettres doubles, seul al première ezst affichée 
-            if(letter == word[i].ToString() && wordContainer.GetComponentsInChildren<TextMeshProUGUI>()[i].color != Color.yellow){ //si la lettre est trouvée et qu'elle a pas déjà été rajoutée
-                Debug.Log(letter + " in " + word); 
-                correctGuesses ++; 
+                if(letter == word[i].ToString() && wordContainer.GetComponentsInChildren<TextMeshProUGUI>()[i].color != Color.yellow){ //si la lettre est trouvée et qu'elle a pas déjà été rajoutée
+                    Debug.Log(letter + " in " + word); 
+                    correctGuesses ++; 
 
-                wordContainer.GetComponentsInChildren<TextMeshProUGUI>()[i].color = Color.yellow; //affiche la lettre 
-                CheckOutcome(); //Donc mot complètement fini
-                
-                return; //pas return = valdiation des lettres identiques  
+                    wordContainer.GetComponentsInChildren<TextMeshProUGUI>()[i].color = Color.yellow; //affiche la lettre 
+                    CheckOutcome(); //Donc mot complètement fini
+                    
+                    return; //return empêche valdiation des lettres identiques  
+                }
             }
-        }
         }
 
     }
@@ -107,5 +139,17 @@ public class LetterSpawn : MonoBehaviour
             }
             
         }
+    }
+
+        public void AddLetter(Letter letter)
+    {
+        letters.Add(letter);
+        
+    }
+
+    public void EraseLetter(Letter letter)
+    {
+        letters.Remove(letter); 
+        Destroy(letter.gameObject, 0.2f); //Destruction avec un peu de délai 
     }
 }
