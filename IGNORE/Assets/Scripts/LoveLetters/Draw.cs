@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.VisualScripting;
+using UnityEngine.UI;
 
 //https://pastebin.com/1X0wgrqw
 //https://www.youtube.com/watch?v=qOP83fot3c0
@@ -53,6 +54,11 @@ public class Draw : MonoBehaviour
     List<Vector2> drawnPoints = new List<Vector2>(); //Va permettre de conserver une liste des points dessinés 
     [SerializeField] private float minPointDistance = 5f; //Pour éviter que les points se rajoutent sans cesse dans drawnPoints 
 
+    //Visualisation du pinceau
+    [SerializeField] private Slider sliderPinceau;
+    [SerializeField] private Gradient gradientPinceau; //utilse pour faire un dégradé sur la barre du pinceau
+    [SerializeField] private Image fillPinceau; //Image du remplissage du pinceau
+
     //lettres 
     [SerializeField] private Transform canvasTransform; // nécessaire pour la fonction pour savoir où se trouve les lettres dans le canvas dans letters 
     private Vector3 topLeftLocal, bottomRightLocal; //Sert de conversion pour garder valeur dans le monde
@@ -77,6 +83,8 @@ public class Draw : MonoBehaviour
 
         //Pinceau valeur
         valPinceau = maxPinceau; 
+
+        SetMaxPinceau(maxPinceau); 
     }
 
     private void Update()
@@ -117,12 +125,27 @@ public class Draw : MonoBehaviour
         SetTexture(); 
     }
 
+    private void SetMaxPinceau(int max) //S'occupe de gérer le slider de la barre du pinceau
+    {
+        sliderPinceau.maxValue = max; 
+        sliderPinceau.value = max;
+
+        fillPinceau.color = gradientPinceau.Evaluate(1f); 
+    }
+
+    private void SetValuePinceau(int value)
+    {
+        sliderPinceau.value = value; 
+
+        fillPinceau.color = gradientPinceau.Evaluate(sliderPinceau.normalizedValue); //on met la couleur à la valeur normalisée du slider
+    }
+
     private void DecreasePinceau(float dist)
     {
         if(valPinceau > 0)
         {
             valPinceau -= dist * brushCostPerPixel; //Réduit par la distance * cout en pixel (permet que si joueur dessine lentement alors même taille que dessiné rapidement)
-
+            SetValuePinceau((int)valPinceau); 
         }
         else //si le pinceau arrive à zéro ou en dessous alors on efface tout
         {
@@ -176,9 +199,10 @@ yPixel = (int)(v * totalYPixels);*/
             //Afficher les pixels 
             ChangePixelsAroundPoint();
         }
-        else
+        else //Donc si la cible est pas touchée
         {
             pressedLastFrame = false; 
+            ResetPinceau(); //Si la cible est pas touchée, reset du pinceau
         }
     }
 
@@ -233,6 +257,7 @@ yPixel = (int)(v * totalYPixels);*/
     private void ResetPinceau()
     {
         valPinceau = maxPinceau;
+        SetValuePinceau((int)valPinceau); //Ajout de la valeur du pinceau pour le remettre au max 
         drawnPoints.Clear(); //Permet de dire que les points sont à refaire 
         ResetColor(); 
     }
