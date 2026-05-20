@@ -663,6 +663,8 @@ MonoBehaviour:
   letterContainer: {fileID: 3571149985654344497, guid: 3802289f7e8986a46b628907f33f037e, type: 3}
   nbRandomLetter: 10
   letters: []
+  minDistanceBetweenLetters: 0.1
+  maxSpawnAttempts: 100
 --- !u!4 &649009703
 Transform:
   m_ObjectHideFlags: 0

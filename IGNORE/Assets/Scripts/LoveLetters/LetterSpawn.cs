@@ -25,12 +25,16 @@ public class LetterSpawn : MonoBehaviour
     //Création d'une liste contenant toutes les lettres (en public car Draw.cs)
     public List<Letter> letters = new List<Letter>(); 
 
+    //Gestion du spawn pour éviter que les lettres se superposent 
+    [SerializeField] private float minDistanceBetweenLetters = 0.1f; 
+    [SerializeField] private int maxSpawnAttempts = 100; //Nb d'essai pour trouver une place à la lettre, permet d'éviter que le jeu crash s'il trouve jamais d'emplacement
+
     void Start()
     {
         InitialiseGame(); 
     }
 
-    /*TEST
+    ///*TEST
     void Update()
     {
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
@@ -38,7 +42,7 @@ public class LetterSpawn : MonoBehaviour
             SpawnRandomLetter(); 
             
         }
-    }*/
+    }
 
     private void InitialiseGame()
     {
@@ -73,12 +77,45 @@ public class LetterSpawn : MonoBehaviour
         return line.Substring(0, line.Length - 1);
     }
 
-    private void SpawnLetter(string letter)
+    private void SpawnLetter(string letter) //Fait apparaitre une lettre sur le board
     {
+        Vector3 randomPos = Vector3.zero; 
+        bool validPosition = false; 
+        
+        //Esssaye de trouver un endroit éloigné des autres lettres 
+        for(int attempt = 0; attempt < maxSpawnAttempts; attempt++)
+        {
+            randomPos = new Vector3(Random.Range(-0.45f, 0.45f), Random.Range(-0.45f, 0.45f), 0f); 
+
+            validPosition = true; 
+
+            foreach(Letter otherLetter in letters)
+            {
+                float dist = Vector3.Distance(randomPos, otherLetter.transform.localPosition);
+
+                if(dist < minDistanceBetweenLetters)
+                {
+                    validPosition = false; 
+                    break; 
+                }
+            }
+
+            if (validPosition)
+            {
+                break; 
+            }
+        }
+
+        if (!validPosition)
+        {
+            Debug.Log("Pas de place pour spawn lettre"); 
+            return; 
+        }
+
         GameObject clone = Instantiate(letterPrefab, lettersSpawn);
 
         //Definition de la position locale à donner
-        clone.transform.localPosition = new Vector3(Random.Range(-0.45f, 0.45f), Random.Range(-0.45f, 0.45f), 0);  
+        clone.transform.localPosition = randomPos;   
         
         //Récupération du script 
         Letter letterScript = clone.GetComponent<Letter>();
@@ -89,12 +126,44 @@ public class LetterSpawn : MonoBehaviour
         AddLetter(letterScript) ;
     }
 
-    private void SpawnRandomLetter()
+    private void SpawnRandomLetter() //Fait apparaitre une lettre random sur le board
     {
+        Vector3 randomPos = Vector3.zero; 
+        bool validPosition = false; 
+        
+        for(int attempt = 0; attempt < maxSpawnAttempts; attempt++)
+        {
+            randomPos = new Vector3(Random.Range(-0.45f, 0.45f), Random.Range(-0.45f, 0.45f), 0f); 
+
+            validPosition = true; 
+
+            foreach(Letter otherLetter in letters)
+            {
+                float dist = Vector3.Distance(randomPos, otherLetter.transform.localPosition);
+
+                if(dist < minDistanceBetweenLetters)
+                {
+                    validPosition = false; 
+                    break; 
+                }
+            }
+
+            if (validPosition)
+            {
+                break; 
+            }
+        }
+
+        if (!validPosition)
+        {
+            Debug.Log("Pas de place pour spawn lettre"); 
+            return; 
+        }
+
         GameObject clone = Instantiate(letterPrefab, lettersSpawn); //Instanciation du prefab dans lettersSpawn
 
         //Definition de la position locale à donner
-        clone.transform.localPosition = new Vector3(Random.Range(-0.45f, 0.45f), Random.Range(-0.45f, 0.45f), 0);  //0.45 parce que la taille du cube = 1 divisé par 2 (et 0.05 de marge)
+        clone.transform.localPosition = randomPos;  //0.45 parce que la taille du cube = 1 divisé par 2 (et 0.05 de marge)
         
         //Récupération du script 
         Letter letterScript = clone.GetComponent<Letter>();
