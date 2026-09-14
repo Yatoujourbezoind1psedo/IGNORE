@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI; 
+using System.Collections;
 
 //https://youtu.be/DCndoQFN344?si=aM7H5GgXvFcpYiPm
 public class InfiniteScroll : MonoBehaviour
@@ -13,6 +14,9 @@ public class InfiniteScroll : MonoBehaviour
     
     private Vector2 OldVelocity; 
     private bool isUpdated; 
+
+    //Secondes avant que perso n'apparaisse
+    [SerializeField] private float tempsAttente = 5; 
 
     void Start()
     {
@@ -36,9 +40,12 @@ public class InfiniteScroll : MonoBehaviour
             }
             RectTransform RT = Instantiate(ItemList[num], contentPanelTransform);
             RT.SetAsFirstSibling(); 
+
         }
 
         contentPanelTransform.localPosition  = new Vector3((0 - (ItemList[0].rect.width + HLG.spacing) * ItemsToAdd), contentPanelTransform.localPosition.y, contentPanelTransform.localPosition.z); 
+
+        StartCoroutine(ApparitionIntruCoroutine()); 
     }
 
     // Update is called once per frame
@@ -65,5 +72,23 @@ public class InfiniteScroll : MonoBehaviour
             contentPanelTransform.localPosition += new Vector3(ItemList.Length * (ItemList[0].rect.width + HLG.spacing), 0, 0);
             isUpdated = true; 
         }
+
+    }
+
+    private IEnumerator ApparitionIntruCoroutine()
+    {
+        yield return new WaitForSeconds(tempsAttente);
+        Debug.Log("Apparition perso"); 
+
+        //On parcout la liste de tous les éléments pour les activer s'il ne le sont pas
+        foreach(Transform child in contentPanelTransform.transform)
+        {
+            if(child.gameObject.activeSelf == false)
+            {
+                child.gameObject.SetActive(true); 
+            }
+        }
+
+
     }
 }
