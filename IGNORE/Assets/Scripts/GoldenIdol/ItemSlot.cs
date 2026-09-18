@@ -5,6 +5,7 @@ using TMPro;
 public class ItemSlot : MonoBehaviour, IDropHandler
 {
     [SerializeField] private string nomAttendu;
+    private bool motTrouve = false; 
     public void OnDrop(PointerEventData eventData)
     {
         //Debug.Log("OnDrop"); 
@@ -20,15 +21,21 @@ public class ItemSlot : MonoBehaviour, IDropHandler
 
             //Debug.Log(child.GetComponent<TextMeshProUGUI>().text);
 
-            if(child.GetComponent<TextMeshProUGUI>().text.ToLower() == nomAttendu.ToLower())
+            if(child.GetComponent<TextMeshProUGUI>().text.ToLower() == nomAttendu.ToLower()) //si le texte présent sur l'objet est le même que celui attendu
             {
                 Debug.Log(child.GetComponent<TextMeshProUGUI>().text); 
+                motTrouve = true;
             }
-
-            
-
-            
+            else //DOIT RETOURNER FALSE SI RIEN N'EST DANS LE SLOT AUSSI 
+            {
+                motTrouve = false;
+            }     
         
         }
     }   
+
+    public bool MotTrouve()
+    {
+        return motTrouve;
+    }
 }
