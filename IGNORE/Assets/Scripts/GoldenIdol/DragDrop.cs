@@ -9,7 +9,7 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     private RectTransform rectTransform; 
     private CanvasGroup canvasGroup; 
 
-    [SerializeField] private float tempsFade; 
+    [SerializeField] private float tempsFade, delayFade; 
 
     private RotatoFasterBanana rotatoFasterBanana; 
 
@@ -24,7 +24,7 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         //Les rends transparents au début
         this.GetComponent<CanvasGroup>().alpha = 0f; 
         //Puis réaffiche
-        StartCoroutine(FadeFromTransparent(tempsFade)); 
+        StartCoroutine(FadeFromTransparent(tempsFade, delayFade)); 
     }
 
     //évite que les mots ne tournent sur eux mêmes 
@@ -70,9 +70,9 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         
     }
 
-    public IEnumerator FadeFromTransparent(float duration)
+    public IEnumerator FadeFromTransparent(float duration, float delay)
     {
-
+        yield return new WaitForSeconds(delay);
         for (float t = 0; t < duration; t += Time.deltaTime)
         {
             this.GetComponent<CanvasGroup>().alpha = Mathf.Lerp(0f, 1f, t / duration);

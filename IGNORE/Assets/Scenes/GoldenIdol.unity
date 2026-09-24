@@ -310,6 +310,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DragDrop
   canvas: {fileID: 479857182}
   tempsFade: 2
+  delayFade: 0
 --- !u!114 &214433224
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -852,7 +853,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DragDrop
   canvas: {fileID: 479857182}
-  tempsFade: 4
+  tempsFade: 2
+  delayFade: 1
 --- !u!114 &644471287
 MonoBehaviour:
   m_ObjectHideFlags: 0
