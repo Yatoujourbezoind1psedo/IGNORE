@@ -11,10 +11,15 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
     [SerializeField] private float tempsFade; 
 
+    private RotatoFasterBanana rotatoFasterBanana; 
+
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
+
+        //Recup du script de rotation pour avoir la durée
+        rotatoFasterBanana = Object.FindFirstObjectByType<RotatoFasterBanana>();
 
         //Les rends transparents au début
         this.GetComponent<CanvasGroup>().alpha = 0f; 
@@ -30,15 +35,22 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        //Debug.Log("On Begin Drag"); 
-        canvasGroup.blocksRaycasts = false; //Comme ça le drop pourra s'activer sur l'item slot
-        canvasGroup.alpha = .6f; 
+        if (rotatoFasterBanana.GetMouvementFini())
+        {
+            //Debug.Log("On Begin Drag"); 
+            canvasGroup.blocksRaycasts = false; //Comme ça le drop pourra s'activer sur l'item slot
+            canvasGroup.alpha = .6f; 
+        }
+        
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        //Debug.Log("On Drag"); 
-        rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor; 
+        if (rotatoFasterBanana.GetMouvementFini())
+        {
+            //Debug.Log("On Drag"); 
+            rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor; 
+        }
     }
 
     public void OnEndDrag(PointerEventData eventData)

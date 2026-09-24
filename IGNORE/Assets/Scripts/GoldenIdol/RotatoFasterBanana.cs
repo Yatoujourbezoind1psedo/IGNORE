@@ -8,6 +8,7 @@ public class RotatoFasterBanana : MonoBehaviour
 
     private bool tempsExpire = false; //Pour éviter qu'il calcule trop souvent timeSinceLevelLoad, c'est une bonne idée je pense 
 
+    private bool mouvementFini = false; 
     void Update()
     {
         if(!tempsExpire && Time.timeSinceLevelLoad > tempsRotation)
@@ -33,7 +34,13 @@ public class RotatoFasterBanana : MonoBehaviour
             //Calque rotation sur 0° pour éviter qu'il soit légèrement tourné
             currentAngle = 0f; 
             transform.rotation = Quaternion.identity; 
+            mouvementFini = true; 
         }
         
+    }
+
+    public bool GetMouvementFini()
+    {
+        return mouvementFini;
     }
 }
