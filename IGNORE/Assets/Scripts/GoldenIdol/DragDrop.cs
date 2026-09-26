@@ -40,6 +40,7 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         transform.rotation = Quaternion.identity;   
     }
 
+    //Dès que le mot est drag, suppresion de sa référence dans slot de base + devient enfant de "Mots", parent de base
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (rotatoFasterBanana.GetMouvementFini())
@@ -49,6 +50,7 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
             canvasGroup.alpha = .6f; 
 
             originalSlot = GetComponentInParent<ItemSlot>();
+            //Séparation du slot d'origine
             if(originalSlot != null)
             {
                 originalSlot.RemoveItem(gameObject); 
@@ -88,10 +90,11 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
                 //originalSlot.RemoveItem(gameObject); 
             }
             */
-            if (newSlot == null)
+            /*
+            if (newSlot == null) //INUTILE : remove item à partir du début donc osef
             {
                 Debug.Log("OBJET LACEH VIDE"); 
-            }
+            }*/
             originalSlot = null; 
         }
     }

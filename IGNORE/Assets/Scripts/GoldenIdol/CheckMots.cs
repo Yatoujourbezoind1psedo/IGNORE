@@ -1,10 +1,19 @@
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro; 
+
 
 public class CheckMots : MonoBehaviour
 {
     public List<ItemSlot> itemSlots; 
     private int nbError; 
+
+    [SerializeField] private TextMeshProUGUI textAffichage;
+
+    private void Start()
+    {
+        CheckSlots(); //Ne sert qu'à remplir avec texte disant que pas tous les éléments 
+    }
 
     //Fonction qui check si tous les emplacements retournent vrai
     public void CheckSlots()
@@ -26,15 +35,18 @@ public class CheckMots : MonoBehaviour
 
         if(slotsContientsNull)
         {
-            Debug.Log("PAS TOUS LES ELEMENTS");
+            //Debug.Log("PAS TOUS LES ELEMENTS");
+            textAffichage.text = "PAS TOUS LES ELEMENTS"; 
         }
         else if (nbError > 0)
         {
-            Debug.Log("NB error : " + nbError);
+            //Debug.Log("NB error : " + nbError);
+            textAffichage.text = "NB error : " + nbError; 
         }
         else
         {
-            Debug.Log("VICTOIRE");
+            //Debug.Log("VICTOIRE");
+            textAffichage.text = "VICTOIRE"; 
         }
     }
 }

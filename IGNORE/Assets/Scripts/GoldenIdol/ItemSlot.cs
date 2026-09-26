@@ -9,6 +9,14 @@ public class ItemSlot : MonoBehaviour, IDropHandler
 
     public GameObject currentItem; //Va permettre de savoir quel objet est le current
 
+    private CheckMots scriptCheckMots; 
+
+    private void Start()
+    {
+        //Recup du script qui va s'activer à chauqe fois qu'un objet est mis dans un slot
+        scriptCheckMots = Object.FindFirstObjectByType<CheckMots>();
+    } 
+
     public void OnDrop(PointerEventData eventData)
     {
         //Debug.Log("OnDrop"); 
@@ -45,6 +53,8 @@ public class ItemSlot : MonoBehaviour, IDropHandler
             currentItem = item;
             item.transform.SetParent(transform); //Permet de dire à l'objet que son parent est le slot 
              
+            //Check de tous les slots au dépot d'un item
+            scriptCheckMots.CheckSlots(); 
         }  
     }   
 
@@ -55,7 +65,10 @@ public class ItemSlot : MonoBehaviour, IDropHandler
         {
             currentItem = null; 
             motTrouve = null; //Si l'item est retiré le mottrouvé est null 
-            Debug.Log("Objet retiré du slot"); 
+            //Debug.Log("Objet retiré du slot"); 
+
+            //Reaffichage des réponses pour éviter confusion
+            scriptCheckMots.CheckSlots(); 
         }
     }
 
