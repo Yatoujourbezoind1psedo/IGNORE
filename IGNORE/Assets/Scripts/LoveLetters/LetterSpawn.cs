@@ -30,7 +30,7 @@ public class LetterSpawn : MonoBehaviour
     [SerializeField] private float minDistanceBetweenLetters = 0.1f; 
     [SerializeField] private int maxSpawnAttempts = 100; //Nb d'essai pour trouver une place à la lettre, permet d'éviter que le jeu crash s'il trouve jamais d'emplacement
 
-    [SerializeField] private float maxTempsDelayRespawn, delayPostAcceleration, delayRefreshNormal; 
+    [SerializeField] private float maxTempsDelayRespawn, delayPostAcceleration, delayRefreshNormal; //les maxTempsDelayRespawn et delayRefreshNormal doivent être égaux pour qu'on voie pas l'accélération
     private bool blocEndGame = false; //permet d'éviter que la coroutine end game s'active plusieurs fois 
     [SerializeField] private int nbAvantAcceleration; //nb de fois où le joueur peut jouer chill avant que le jeu parte en COUILLES 
 
@@ -54,6 +54,11 @@ public class LetterSpawn : MonoBehaviour
     {
         yield return new WaitForSeconds(delayPostAcceleration);
         Debug.Log("FIN"); 
+
+        //Arret du pinceau
+
+        //Arret du spawn
+        StopAllCoroutines(); //Ne fonctionne pas en ciblant juste acceleration pt parce que délai trop court 
     }
 
     private IEnumerator CoroutineRefreshMot()
