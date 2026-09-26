@@ -311,6 +311,8 @@ MonoBehaviour:
   canvas: {fileID: 479857182}
   tempsFade: 2
   delayFade: 0
+  originalSlot: {fileID: 0}
+  motsLayer: {fileID: 0}
 --- !u!114 &214433224
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -855,6 +857,8 @@ MonoBehaviour:
   canvas: {fileID: 479857182}
   tempsFade: 2
   delayFade: 1
+  originalSlot: {fileID: 0}
+  motsLayer: {fileID: 0}
 --- !u!114 &644471287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1253,6 +1257,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSlot
   nomAttendu: Pomme
+  currentItem: {fileID: 0}
 --- !u!114 &1088256292
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1417,7 +1422,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RotatoFasterBanana
   rotationSpeed: 90
-  tempsRotation: 3
+  tempsRotation: 0
 --- !u!1 &1554621354
 GameObject:
   m_ObjectHideFlags: 0
@@ -1634,6 +1639,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSlot
   nomAttendu: Ryuk
+  currentItem: {fileID: 0}
 --- !u!1 &1711796117
 GameObject:
   m_ObjectHideFlags: 0

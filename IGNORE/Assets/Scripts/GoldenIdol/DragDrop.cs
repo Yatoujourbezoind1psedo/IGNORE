@@ -13,6 +13,10 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
     private RotatoFasterBanana rotatoFasterBanana; 
 
+    public ItemSlot originalSlot; 
+
+    [SerializeField] private Transform motsLayer;
+
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -25,6 +29,9 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         this.GetComponent<CanvasGroup>().alpha = 0f; 
         //Puis réaffiche
         StartCoroutine(FadeFromTransparent(tempsFade, delayFade)); 
+
+        //REcup du motsLayer pour mettre mots dans le vide
+        motsLayer = GameObject.Find("Mots").transform; 
     }
 
     //évite que les mots ne tournent sur eux mêmes 
@@ -40,6 +47,15 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
             //Debug.Log("On Begin Drag"); 
             canvasGroup.blocksRaycasts = false; //Comme ça le drop pourra s'activer sur l'item slot
             canvasGroup.alpha = .6f; 
+
+            originalSlot = GetComponentInParent<ItemSlot>();
+            if(originalSlot != null)
+            {
+                originalSlot.RemoveItem(gameObject); 
+            }
+
+            //Met en enfant du layer de mots, son parent de base
+            transform.SetParent(motsLayer, true); 
         }
         
     }
@@ -55,9 +71,29 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        //Debug.Log("On End Drag"); 
-        canvasGroup.blocksRaycasts = true; 
-        canvasGroup.alpha = 1f; 
+        if (rotatoFasterBanana.GetMouvementFini())
+        {
+            //Debug.Log("On End Drag"); 
+            canvasGroup.blocksRaycasts = true; 
+            canvasGroup.alpha = 1f; 
+
+            //Suppresion de l'item si l'objet est mis dans un autre
+            ItemSlot newSlot = GetComponentInParent<ItemSlot>();
+
+            //Debug.Log(newSlot.name); 
+            /*
+            if(originalSlot != null && originalSlot != newSlot) //PLUS NECESSAIRE : removeitem au begin drag 
+            {
+                //Debug.Log("Objet retiré de slot"); 
+                //originalSlot.RemoveItem(gameObject); 
+            }
+            */
+            if (newSlot == null)
+            {
+                Debug.Log("OBJET LACEH VIDE"); 
+            }
+            originalSlot = null; 
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)
