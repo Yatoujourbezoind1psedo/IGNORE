@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
 using System.Collections.Generic;
+using System.Collections;
 
 //https://www.youtube.com/watch?v=30FpzpFNY-E&t=1698s
 
@@ -19,7 +20,7 @@ public class LetterSpawn : MonoBehaviour
     private int correctGuesses; 
     private string word; 
 
-    private bool isGameFinished = false; 
+    private bool isGameFinished = false; //Pour la partie (A voir si ça rentre pas en conflit avec reset de nouvelles partie une fois mot trouvé)
 
     [SerializeField] private int nbRandomLetter = 10; 
     //Création d'une liste contenant toutes les lettres (en public car Draw.cs)
@@ -28,6 +29,11 @@ public class LetterSpawn : MonoBehaviour
     //Gestion du spawn pour éviter que les lettres se superposent 
     [SerializeField] private float minDistanceBetweenLetters = 0.1f; 
     [SerializeField] private int maxSpawnAttempts = 100; //Nb d'essai pour trouver une place à la lettre, permet d'éviter que le jeu crash s'il trouve jamais d'emplacement
+
+    [SerializeField] private float maxTempsDelayRespawn, delayPostAcceleration, delayRefreshNormal; 
+    private bool blocEndGame = false; //permet d'éviter que la coroutine end game s'active plusieurs fois 
+    [SerializeField] private int nbAvantAcceleration; //nb de fois où le joueur peut jouer chill avant que le jeu parte en COUILLES 
+
 
     void Start()
     {
@@ -39,13 +45,53 @@ public class LetterSpawn : MonoBehaviour
     {
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-            SpawnRandomLetter(); 
+            InitialiseGame(); 
             
         }
     }
 
+    private IEnumerator EndGame()
+    {
+        yield return new WaitForSeconds(delayPostAcceleration);
+        Debug.Log("FIN"); 
+    }
+
+    private IEnumerator CoroutineRefreshMot()
+    {
+        yield return new WaitForSeconds(delayRefreshNormal); 
+        InitialiseGame(); 
+    }
+
+    //S'appelle elle même pour accélérer vitesse petit à petit 
+    private IEnumerator CoroutineAcceleration()
+    {
+        yield return new WaitForSeconds(maxTempsDelayRespawn);
+        if (maxTempsDelayRespawn >= 1) //Possible de rajouter courbe d'accélération en mettant différents stades
+        {
+            maxTempsDelayRespawn -= 1; 
+        }
+
+        if (maxTempsDelayRespawn <= 0 && !blocEndGame)
+        {
+            blocEndGame = true; 
+            maxTempsDelayRespawn = 0f; //A changer au besoin d'accélération plus rapide ou plus crescendo
+            StartCoroutine(EndGame()); 
+        }
+        InitialiseGame(); 
+        StartCoroutine(CoroutineAcceleration()); 
+    }
+
     private void InitialiseGame()
     {
+        //Le jeu peut reprendre 
+        isGameFinished = false;  
+        //Reset des lettres pour création d'un nouveau game
+        letters.Clear(); 
+        foreach(Transform letter in lettersSpawn.GetComponentInChildren<Transform>())
+        {
+            Destroy(letter.gameObject); 
+        }
+
         //reset data to original state
         correctGuesses = 0; 
         foreach(Transform child in wordContainer.GetComponentInChildren<Transform>())
@@ -205,6 +251,18 @@ public class LetterSpawn : MonoBehaviour
             for(int i = 0; i < word.Length; i++)
             {
                 wordContainer.GetComponentsInChildren<TextMeshProUGUI>()[i].color = Color.red; //Met toutes les lettre en vert
+            }
+
+            
+            if(nbAvantAcceleration > 0) //Dans ce cas on continue normal
+            {
+                nbAvantAcceleration --; 
+                StartCoroutine(CoroutineRefreshMot());
+            }
+            
+            else //Autrement lancement corout récursive accélérant
+            {
+                StartCoroutine(CoroutineAcceleration()); 
             }
             
         }

@@ -665,6 +665,10 @@ MonoBehaviour:
   letters: []
   minDistanceBetweenLetters: 0.1
   maxSpawnAttempts: 100
+  maxTempsDelayRespawn: 5
+  delayPostAcceleration: 3
+  delayRefreshNormal: 2
+  nbAvantAcceleration: 3
 --- !u!4 &649009703
 Transform:
   m_ObjectHideFlags: 0
