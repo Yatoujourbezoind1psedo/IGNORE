@@ -484,7 +484,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 105164434}
         m_TargetAssemblyTypeName: ActionSelectChara, Assembly-CSharp
-        m_MethodName: ActionButton
+        m_MethodName: SelectChara
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -544,8 +544,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7fa996980f6d884aa9f26db95b033be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ActionSelectChara
-  fichesPerso: {fileID: 1664422576}
+  fichesPerso: {fileID: 0}
   ficheDuPerso: {fileID: 1515037479}
+  erreur: {fileID: 0}
+  delayRedirection: 3
 --- !u!1 &113180612
 GameObject:
   m_ObjectHideFlags: 0
@@ -632,7 +634,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 113180617}
         m_TargetAssemblyTypeName: ActionSelectChara, Assembly-CSharp
-        m_MethodName: ActionButton
+        m_MethodName: SelectChara
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -694,6 +696,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ActionSelectChara
   fichesPerso: {fileID: 0}
   ficheDuPerso: {fileID: 0}
+  erreur: {fileID: 0}
+  delayRedirection: 0
 --- !u!1 &127483710
 GameObject:
   m_ObjectHideFlags: 0
@@ -913,7 +917,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 319068981}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 105164434}
+        m_TargetAssemblyTypeName: ActionSelectChara, Assembly-CSharp
+        m_MethodName: ConfirmationPerso
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &319068981
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1038,7 +1054,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 583278161}
         m_TargetAssemblyTypeName: ActionSelectChara, Assembly-CSharp
-        m_MethodName: ActionButton
+        m_MethodName: SelectChara
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1100,6 +1116,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ActionSelectChara
   fichesPerso: {fileID: 0}
   ficheDuPerso: {fileID: 0}
+  erreur: {fileID: 0}
+  delayRedirection: 0
 --- !u!1 &818420119
 GameObject:
   m_ObjectHideFlags: 0
@@ -1229,6 +1247,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ActionSelectChara
   fichesPerso: {fileID: 0}
   ficheDuPerso: {fileID: 0}
+  erreur: {fileID: 0}
+  delayRedirection: 0
 --- !u!114 &829142571
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1275,7 +1295,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 829142570}
         m_TargetAssemblyTypeName: ActionSelectChara, Assembly-CSharp
-        m_MethodName: ActionSpecial
+        m_MethodName: SelectCharaSpecial
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1754,7 +1774,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1115715235}
         m_TargetAssemblyTypeName: ActionSelectChara, Assembly-CSharp
-        m_MethodName: ActionButton
+        m_MethodName: SelectChara
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1816,6 +1836,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ActionSelectChara
   fichesPerso: {fileID: 0}
   ficheDuPerso: {fileID: 0}
+  erreur: {fileID: 0}
+  delayRedirection: 0
 --- !u!1 &1138733400
 GameObject:
   m_ObjectHideFlags: 0
@@ -2048,7 +2070,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1515037480
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2086,6 +2108,81 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!1 &1652205272
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1652205273}
+  - component: {fileID: 1652205275}
+  - component: {fileID: 1652205274}
+  m_Layer: 5
+  m_Name: ERROR
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1652205273
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1652205272}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1972441216}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1652205274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1652205272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1652205275
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1652205272}
+  m_CullTransparentMesh: 1
 --- !u!1 &1664422576
 GameObject:
   m_ObjectHideFlags: 0
@@ -2103,7 +2200,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1664422577
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2388,7 +2485,6 @@ GameObject:
   - component: {fileID: 1723447244}
   - component: {fileID: 1723447243}
   - component: {fileID: 1723447242}
-  - component: {fileID: 1723447245}
   m_Layer: 5
   m_Name: BoutonRetour
   m_TagString: Untagged
@@ -2459,8 +2555,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1723447245}
-        m_TargetAssemblyTypeName: BoutonRetour, Assembly-CSharp
+      - m_Target: {fileID: 105164434}
+        m_TargetAssemblyTypeName: ActionSelectChara, Assembly-CSharp
         m_MethodName: Retour
         m_Mode: 1
         m_Arguments:
@@ -2509,20 +2605,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1723447240}
   m_CullTransparentMesh: 1
---- !u!114 &1723447245
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1723447240}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca3d595cb757e3f4dae371d3afa45a95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BoutonRetour
-  fichesPerso: {fileID: 0}
-  ficheDuPerso: {fileID: 0}
 --- !u!1 &1746550471
 GameObject:
   m_ObjectHideFlags: 0
@@ -2934,6 +3016,7 @@ RectTransform:
   - {fileID: 818420120}
   - {fileID: 889067301}
   - {fileID: 1664422577}
+  - {fileID: 1652205273}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
