@@ -89,7 +89,7 @@ public class Draw : MonoBehaviour
 
     private void Update()
     {
-        if (Mouse.current.leftButton.isPressed)
+        if (Mouse.current.leftButton.isPressed && !letterSpawn.IsGameFinished())
         {
             CalculatePixel();
         }

@@ -43,11 +43,12 @@ public class LetterSpawn : MonoBehaviour
     ///*TEST
     void Update()
     {
+        /*
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             InitialiseGame(); 
             
-        }
+        }*/
     }
 
     private IEnumerator EndGame()
@@ -56,6 +57,7 @@ public class LetterSpawn : MonoBehaviour
         Debug.Log("FIN"); 
 
         //Arret du pinceau
+        isGameFinished = true; 
 
         //Arret du spawn
         StopAllCoroutines(); //Ne fonctionne pas en ciblant juste acceleration pt parce que délai trop court 
@@ -283,5 +285,10 @@ public class LetterSpawn : MonoBehaviour
     {
         letters.Remove(letter); 
         Destroy(letter.gameObject, 0.2f); //Destruction avec un peu de délai 
+    }
+
+    public bool IsGameFinished()
+    {
+        return isGameFinished; 
     }
 }
