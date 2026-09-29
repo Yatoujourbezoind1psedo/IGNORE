@@ -9,12 +9,6 @@ public class ActionSelectChara : MonoBehaviour
     [SerializeField] private GameObject fichesPerso, ficheDuPerso, erreur; 
     [SerializeField] private float delayRedirection = 3f;
 
-    private void Start()
-    {
-        fichesPerso = GameObject.Find("FichesPersos"); 
-        erreur = GameObject.Find("ERROR"); 
-
-    }
 
     //Pour un perso séléctionné 
     public void SelectChara()
