@@ -54,7 +54,7 @@ public class LetterSpawn : MonoBehaviour
     private IEnumerator EndGame()
     {
         yield return new WaitForSeconds(delayPostAcceleration);
-        Debug.Log("FIN"); 
+        //Debug.Log("FIN"); 
 
         //Arret du pinceau
         isGameFinished = true; 
@@ -108,6 +108,7 @@ public class LetterSpawn : MonoBehaviour
 
         //Generate new word 
         word = GenerateWord().ToUpper(); //POur avoir tout en MAJ
+        Debug.Log(word); 
         foreach(char letter in word)
         {
             var temp = Instantiate(letterContainer, wordContainer.transform); 
@@ -237,7 +238,7 @@ public class LetterSpawn : MonoBehaviour
         {
             for(int i = 0; i < word.Length; i++){ //Souci avec détection de la même lettre + avec lettres doubles, seul al première ezst affichée 
                 if(letter == word[i].ToString() && wordContainer.GetComponentsInChildren<TextMeshProUGUI>()[i].color != Color.yellow){ //si la lettre est trouvée et qu'elle a pas déjà été rajoutée
-                    Debug.Log(letter + " in " + word); 
+                    //Debug.Log(letter + " in " + word); 
                     correctGuesses ++; 
 
                     wordContainer.GetComponentsInChildren<TextMeshProUGUI>()[i].color = Color.yellow; //affiche la lettre 
