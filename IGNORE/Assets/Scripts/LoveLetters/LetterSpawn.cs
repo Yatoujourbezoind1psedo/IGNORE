@@ -15,7 +15,7 @@ public class LetterSpawn : MonoBehaviour
     [SerializeField] private Transform lettersSpawn; //Endroit où les lettres seront rangées 
 
     [SerializeField] private TextAsset possibleWord; //mot à deviner
-    [SerializeField] private GameObject wordContainer, letterContainer; //zone contenant chaque lettre du mot
+    [SerializeField] private GameObject wordContainer, letterContainer, blackScreen; //zone contenant chaque lettre du mot
 
     private int correctGuesses; 
     private string word; 
@@ -61,6 +61,9 @@ public class LetterSpawn : MonoBehaviour
 
         //Arret du spawn
         StopAllCoroutines(); //Ne fonctionne pas en ciblant juste acceleration pt parce que délai trop court 
+
+        //Affiche écran noir
+        blackScreen.SetActive(true); 
     }
 
     private IEnumerator CoroutineRefreshMot()
@@ -108,7 +111,7 @@ public class LetterSpawn : MonoBehaviour
 
         //Generate new word 
         word = GenerateWord().ToUpper(); //POur avoir tout en MAJ
-        Debug.Log(word); 
+        //Debug.Log(word); 
         foreach(char letter in word)
         {
             var temp = Instantiate(letterContainer, wordContainer.transform); 
