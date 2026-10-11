@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem; 
-using UnityEngine.SceneManagement; 
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManagerVisualNovel : MonoBehaviour
 {
@@ -24,6 +25,12 @@ public class GameManagerVisualNovel : MonoBehaviour
     {
         IDLE, ANIMATE
     }
+
+    //Mes variables  
+    [SerializeField] private GameObject historic; 
+    [SerializeField] private Scrollbar historicScrollBar; 
+    private bool gameStop = false; 
+
     void Start()
     {
         if (SaveManager.IsGameSaved()) //Si le jeu est sauvegardé 
@@ -53,7 +60,7 @@ public class GameManagerVisualNovel : MonoBehaviour
     {
         if(state == State.IDLE)
         {
-            if (Keyboard.current.spaceKey.wasPressedThisFrame || Mouse.current.leftButton.wasPressedThisFrame)
+            if (!gameStop &&(Keyboard.current.spaceKey.wasPressedThisFrame || Mouse.current.leftButton.wasPressedThisFrame))
             {
                 if (bottomBarController.IsCompleted())
                 {
@@ -76,6 +83,18 @@ public class GameManagerVisualNovel : MonoBehaviour
             }
             if (Mouse.current.rightButton.wasPressedThisFrame)
             {
+                if(historic.activeSelf == false)
+                {
+                    //Si l'historique est pas actif on stop le jeu et on ouvre l'histoic
+                    SetStopGame(true); 
+                    historic.SetActive(true); 
+                }else if (historic.activeSelf == true)
+                {
+                    CloseHistoric(); 
+                }
+                
+                /*
+                //Pour revenir au dialogue précédent
                 if (bottomBarController.IsFirstSentence())//Si c'est la première phrase de la scène
                 {
                     if(history.Count > 1)// Et si on est pas à la première scène 
@@ -91,7 +110,7 @@ public class GameManagerVisualNovel : MonoBehaviour
                 else
                 {
                     bottomBarController.GoBack(); 
-                }
+                }*/
             }
 
             if (Keyboard.current.escapeKey.wasPressedThisFrame)
@@ -170,6 +189,20 @@ public class GameManagerVisualNovel : MonoBehaviour
 
 
     }
+
+    public void SetStopGame(bool val)
+    {
+        gameStop = val; 
+    }
+
+    public void CloseHistoric()
+    {
+        historicScrollBar.value = 0; //remet l'historic tout en bas
+        SetStopGame(false); 
+        historic.SetActive(false); 
+        
+    }
+
 
     private void PlayAudio(StoryScene.Sentence sentence)
     {
