@@ -28,6 +28,9 @@ public class BottomBarController : MonoBehaviour
         COMPLETED, SPEEDED_UP, PLAYING 
     }
 
+    //Ajout de mes variables
+    [SerializeField] private GameObject historicContent, historicLignePrefab; 
+
     private void Start()
     {
         sprites = new Dictionary<Speaker, SpriteController>();
@@ -101,6 +104,9 @@ public class BottomBarController : MonoBehaviour
         personNameText.text = sentence.speaker.SpeakerName; 
         personNameText.color = sentence.speaker.TextColor;
 
+        //Ajout du texte à l'historique
+        AddTextHistoric(); 
+
         //Gère blabal de perso
         if (sentence.voiceAudio)
         {
@@ -112,6 +118,14 @@ public class BottomBarController : MonoBehaviour
             voicePlayer.Stop(); //SI ya pas de blabla de perso alors tg
         }
         ActSpeakers(isAnimated); 
+    }
+
+    private void AddTextHistoric()
+    {
+        Debug.Log("OSkour"); 
+        GameObject ligne = Instantiate(historicLignePrefab, historicLignePrefab.transform.position, historicLignePrefab.transform.rotation);
+        
+        ligne.transform.SetParent(historicContent.transform); 
     }
 
     public bool IsCompleted() //Pour savoir si le typewriting est fini

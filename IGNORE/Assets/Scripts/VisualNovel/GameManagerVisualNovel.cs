@@ -203,7 +203,6 @@ public class GameManagerVisualNovel : MonoBehaviour
         
     }
 
-
     private void PlayAudio(StoryScene.Sentence sentence)
     {
         audioController.PlayAudio(sentence.music, sentence.sound); 
