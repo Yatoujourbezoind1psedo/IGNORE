@@ -122,7 +122,6 @@ public class BottomBarController : MonoBehaviour
 
     private void AddTextHistoric(string personName, Color personColor, string blabla)
     {
-        Debug.Log("OSkour"); 
         GameObject ligne = Instantiate(historicLignePrefab, historicLignePrefab.transform.position, historicLignePrefab.transform.rotation);
 
         //Mise en place du prénom
