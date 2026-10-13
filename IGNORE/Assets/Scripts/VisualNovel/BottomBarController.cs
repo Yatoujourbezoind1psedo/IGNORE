@@ -105,7 +105,7 @@ public class BottomBarController : MonoBehaviour
         personNameText.color = sentence.speaker.TextColor;
 
         //Ajout du texte à l'historique
-        AddTextHistoric(); 
+        AddTextHistoric(sentence.speaker.SpeakerName, sentence.speaker.TextColor, sentence.text); 
 
         //Gère blabal de perso
         if (sentence.voiceAudio)
@@ -120,10 +120,17 @@ public class BottomBarController : MonoBehaviour
         ActSpeakers(isAnimated); 
     }
 
-    private void AddTextHistoric()
+    private void AddTextHistoric(string personName, Color personColor, string blabla)
     {
         Debug.Log("OSkour"); 
         GameObject ligne = Instantiate(historicLignePrefab, historicLignePrefab.transform.position, historicLignePrefab.transform.rotation);
+
+        //Mise en place du prénom
+        ligne.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = personName + " : "; 
+        ligne.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = personColor; 
+
+        //Mise en place du texte
+        ligne.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = blabla; 
         
         ligne.transform.SetParent(historicContent.transform); 
     }
