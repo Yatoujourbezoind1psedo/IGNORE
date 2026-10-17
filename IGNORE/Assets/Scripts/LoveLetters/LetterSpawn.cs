@@ -30,10 +30,10 @@ public class LetterSpawn : MonoBehaviour
     [SerializeField] private float minDistanceBetweenLetters = 0.1f; 
     [SerializeField] private int maxSpawnAttempts = 100; //Nb d'essai pour trouver une place à la lettre, permet d'éviter que le jeu crash s'il trouve jamais d'emplacement
 
-    [SerializeField] private float maxTempsDelayRespawn, delayPostAcceleration, delayRefreshNormal; //les maxTempsDelayRespawn et delayRefreshNormal doivent être égaux pour qu'on voie pas l'accélération
+    [SerializeField] private float maxTempsDelayRespawn, delayEndScreen, delayRefreshNormal; //les maxTempsDelayRespawn et delayRefreshNormal doivent être égaux pour qu'on voie pas l'accélération
     private bool blocEndGame = false; //permet d'éviter que la coroutine end game s'active plusieurs fois 
     [SerializeField] private int nbAvantAcceleration; //nb de fois où le joueur peut jouer chill avant que le jeu parte en COUILLES 
-
+    private bool firstAcceleration = true; 
 
     void Start()
     {
@@ -53,7 +53,7 @@ public class LetterSpawn : MonoBehaviour
 
     private IEnumerator EndGame()
     {
-        yield return new WaitForSeconds(delayPostAcceleration);
+        yield return new WaitForSeconds(delayEndScreen);
         //Debug.Log("FIN"); 
 
         //Arret du pinceau
@@ -75,19 +75,33 @@ public class LetterSpawn : MonoBehaviour
     //S'appelle elle même pour accélérer vitesse petit à petit 
     private IEnumerator CoroutineAcceleration()
     {
+        //Vérifier si on est pour la première fois dans la boucle pour skip l'attente
+        if (firstAcceleration)
+        {
+            firstAcceleration = false; 
+            InitialiseGame(); 
+            StartCoroutine(CoroutineAcceleration()); 
+        }
+
         yield return new WaitForSeconds(maxTempsDelayRespawn);
         if (maxTempsDelayRespawn >= 1) //Possible de rajouter courbe d'accélération en mettant différents stades
         {
-            maxTempsDelayRespawn -= 1; 
+            maxTempsDelayRespawn -= 1;  //A changer au besoin d'accélération plus rapide ou plus crescendo
         }
 
         if (maxTempsDelayRespawn <= 0 && !blocEndGame)
         {
             blocEndGame = true; 
-            maxTempsDelayRespawn = 0f; //A changer au besoin d'accélération plus rapide ou plus crescendo
+            maxTempsDelayRespawn = 0f;
             StartCoroutine(EndGame()); 
         }
         InitialiseGame(); 
+        StartCoroutine(CoroutineAcceleration()); 
+    }
+
+    private IEnumerator StartCoroutineAcceleration()
+    {
+        yield return new WaitForSeconds(delayRefreshNormal);
         StartCoroutine(CoroutineAcceleration()); 
     }
 
@@ -273,7 +287,9 @@ public class LetterSpawn : MonoBehaviour
             
             else //Autrement lancement corout récursive accélérant
             {
-                StartCoroutine(CoroutineAcceleration()); 
+                //Changement de la couleur du pinceau en rouge sang
+                drawScript.ColorBrushBlood(); 
+                StartCoroutine(StartCoroutineAcceleration()); 
             }
             
         }

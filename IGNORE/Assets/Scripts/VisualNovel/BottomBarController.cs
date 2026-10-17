@@ -30,6 +30,7 @@ public class BottomBarController : MonoBehaviour
 
     //Ajout de mes variables
     [SerializeField] private GameObject historicContent, historicLignePrefab; 
+    [SerializeField] private int nbMaxTexteHistoric = 30; 
 
     private void Start()
     {
@@ -123,6 +124,15 @@ public class BottomBarController : MonoBehaviour
     private void AddTextHistoric(string personName, Color personColor, string blabla)
     {
         GameObject ligne = Instantiate(historicLignePrefab, historicLignePrefab.transform.position, historicLignePrefab.transform.rotation);
+
+        //Si le nombre max de texte dans l'historique alors supression du premier élément et rajout du dernier
+        if(historicContent.transform.childCount >= nbMaxTexteHistoric)
+        {
+            Debug.Log("PROUT"); 
+            Destroy (historicContent.transform.GetChild (0).gameObject);
+
+        }
+
 
         //Mise en place du prénom
         ligne.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = personName + " : "; 

@@ -229,6 +229,7 @@ MonoBehaviour:
   fillPinceau: {fileID: 1529103974}
   canvasTransform: {fileID: 501764516}
   letterSpawn: {fileID: 649009702}
+  couleurPinceauFin: {r: 0.7764706, g: 0.047058824, b: 0.047058824, a: 0}
 --- !u!4 &126127161
 Transform:
   m_ObjectHideFlags: 0
@@ -742,7 +743,7 @@ MonoBehaviour:
   minDistanceBetweenLetters: 0.1
   maxSpawnAttempts: 100
   maxTempsDelayRespawn: 3
-  delayPostAcceleration: 3
+  delayEndScreen: 3
   delayRefreshNormal: 2
   nbAvantAcceleration: 1
 --- !u!4 &649009703

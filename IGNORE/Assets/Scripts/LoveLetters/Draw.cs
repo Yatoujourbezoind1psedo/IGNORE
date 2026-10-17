@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.VisualScripting;
+using System.Collections;
+
 using UnityEngine.UI;
 
 //https://pastebin.com/1X0wgrqw
@@ -65,6 +67,9 @@ public class Draw : MonoBehaviour
 
     //Variable pour le spawn de lettre
     [SerializeField] private LetterSpawn letterSpawn; 
+
+    //Couleur du pinceau quand le jeu accélère
+    [SerializeField] private Color couleurPinceauFin; 
 
     void Start()
     {
@@ -359,5 +364,30 @@ yPixel = (int)(v * totalYPixels);*/
             ResetPinceau(); 
         }
         
+    }
+
+    public void ColorBrushBlood()
+    {
+
+        StartCoroutine(CoroutColorBrushBlood()); 
+        
+    }
+
+    private IEnumerator CoroutColorBrushBlood()
+    {
+        Color couleurInit = brushColor; 
+        float duree = 5f; // 1sefonde
+        float temps = 0f; 
+
+        while (temps < duree)
+        {
+            temps += Time.deltaTime; 
+
+            brushColor = Color.Lerp(couleurInit, couleurPinceauFin, temps/duree); 
+
+            yield return null; 
+        }
+
+        brushColor = couleurPinceauFin; // Pour être sur que la couleur finale est celle souhaitée 
     }
 }
