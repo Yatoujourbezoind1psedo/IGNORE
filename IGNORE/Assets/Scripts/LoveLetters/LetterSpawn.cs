@@ -35,6 +35,8 @@ public class LetterSpawn : MonoBehaviour
     [SerializeField] private int nbAvantAcceleration; //nb de fois où le joueur peut jouer chill avant que le jeu parte en COUILLES 
     private bool firstAcceleration = true; 
 
+    [SerializeField] private AudioSource bruitBlanc; 
+
     void Start()
     {
         InitialiseGame(); 
@@ -55,6 +57,9 @@ public class LetterSpawn : MonoBehaviour
     {
         yield return new WaitForSeconds(delayEndScreen);
         //Debug.Log("FIN"); 
+
+        //Ferme sa gueule le bruit
+        bruitBlanc.Stop(); 
 
         //Arret du pinceau
         isGameFinished = true; 
@@ -102,6 +107,7 @@ public class LetterSpawn : MonoBehaviour
     private IEnumerator StartCoroutineAcceleration()
     {
         yield return new WaitForSeconds(delayRefreshNormal);
+        PlayBruitBlanc(); 
         StartCoroutine(CoroutineAcceleration()); 
     }
 
@@ -310,5 +316,44 @@ public class LetterSpawn : MonoBehaviour
     public bool IsGameFinished()
     {
         return isGameFinished; 
+    }
+
+    private void PlayBruitBlanc()
+    {
+        bruitBlanc.volume = 0; 
+        bruitBlanc.Play(); 
+
+        StartCoroutine(CoroutIncreaseVolumeBruitBlanc());  
+    }
+
+    private IEnumerator CoroutIncreaseVolumeBruitBlanc()
+    {
+        float duree = 4f; 
+        float temps = 0f; 
+
+        while (temps < duree) // Augmentation à un seuil bas 
+        {
+            temps += Time.deltaTime; 
+
+            bruitBlanc.volume = Mathf.Lerp(0, 0.2f, temps/duree); 
+
+            yield return null; 
+        }
+
+        //Et accélération plus brutale ensuite
+        duree = 3; 
+        temps = 0; 
+
+        while (temps < duree) // Augmentation à un seuil bas 
+        {
+            temps += Time.deltaTime; 
+
+            bruitBlanc.volume = Mathf.Lerp(0.2f, 1f, temps/duree); 
+
+            yield return null; 
+        }
+
+
+        bruitBlanc.volume = 1f;
     }
 }
