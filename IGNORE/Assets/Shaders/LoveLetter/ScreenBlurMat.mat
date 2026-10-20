@@ -106,7 +106,7 @@ Material:
     - _BlendModePreserveSpecular: 1
     - _Blur: 0.06
     - _BlurCycles: 3
-    - _BlurMultiplier: 1
+    - _BlurMultiplier: 0
     - _BlurSamplesPerCycle: 2
     - _BumpScale: 1
     - _ClearCoatMask: 0
@@ -127,7 +127,7 @@ Material:
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _SaturationLevel: 1
+    - _SaturationLevel: 0.381
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

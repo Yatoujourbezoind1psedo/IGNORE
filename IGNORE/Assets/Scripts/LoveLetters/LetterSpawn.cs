@@ -15,7 +15,7 @@ public class LetterSpawn : MonoBehaviour
     [SerializeField] private Transform lettersSpawn; //Endroit où les lettres seront rangées 
 
     [SerializeField] private TextAsset possibleWord; //mot à deviner
-    [SerializeField] private GameObject wordContainer, letterContainer, blackScreen; //zone contenant chaque lettre du mot
+    [SerializeField] private GameObject wordContainer, letterContainer, emptyRoom, board, canvaGlobal; //zone contenant chaque lettre du mot
 
     private int correctGuesses; 
     private string word; 
@@ -36,6 +36,8 @@ public class LetterSpawn : MonoBehaviour
     private bool firstAcceleration = true; 
 
     [SerializeField] private AudioSource bruitBlanc; 
+    [SerializeField] private RotationCube rotationCube; 
+    
 
     void Start()
     {
@@ -58,6 +60,9 @@ public class LetterSpawn : MonoBehaviour
         yield return new WaitForSeconds(delayEndScreen);
         //Debug.Log("FIN"); 
 
+        //Rotation des cubes 
+        rotationCube.Rotato(); 
+        
         //Ferme sa gueule le bruit
         bruitBlanc.Stop(); 
 
@@ -67,8 +72,10 @@ public class LetterSpawn : MonoBehaviour
         //Arret du spawn
         StopAllCoroutines(); //Ne fonctionne pas en ciblant juste acceleration pt parce que délai trop court 
 
-        //Affiche écran noir
-        blackScreen.SetActive(true); 
+        //Affiche pièce cheloue
+        emptyRoom.SetActive(true); 
+        board.SetActive(false);
+        canvaGlobal.SetActive(false); 
     }
 
     private IEnumerator CoroutineRefreshMot()

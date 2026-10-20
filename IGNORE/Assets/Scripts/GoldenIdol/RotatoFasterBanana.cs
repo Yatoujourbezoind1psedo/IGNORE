@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class RotatoFasterBanana : MonoBehaviour
 {
-    [SerializeField] float rotationSpeed = 100f;
-    [SerializeField] float tempsRotation = 3f; 
-    float currentAngle = 0f;
+    //[SerializeField] float rotationSpeed = 100f;
+    //[SerializeField] float tempsRotation = 3f; 
+    //float currentAngle = 0f;
 
-    private bool tempsExpire = false; //Pour éviter qu'il calcule trop souvent timeSinceLevelLoad, c'est une bonne idée je pense 
+    //private bool tempsExpire = false; //Pour éviter qu'il calcule trop souvent timeSinceLevelLoad, c'est une bonne idée je pense 
 
     private bool mouvementFini = false; 
 
